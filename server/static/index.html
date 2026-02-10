@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gomoku</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .view {
+            display: none;
+        }
+        
+        .view.active {
+            display: block;
+        }
+        
+        /* Auth View */
+        .auth-box {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .auth-box h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        button:hover {
+            background: #45a049;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .error {
+            color: #f44336;
+            margin-top: 10px;
+        }
+        
+        /* Lobby View */
+        .lobby-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .panel {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .panel h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .game-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .game-item {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .game-item:hover {
+            background: #f0f0f0;
+        }
+        
+        .game-item.bot {
+            border-left: 4px solid #2196F3;
+        }
+        
+        .game-item.human {
+            border-left: 4px solid #FF9800;
+        }
+        
+        .game-item.completed {
+            opacity: 0.7;
+            border-left: 4px solid #9E9E9E;
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .player-name {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .elo {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .status {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+        
+        .leaderboard-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .leaderboard-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .leaderboard-item.bot {
+            background: #e3f2fd;
+        }
+        
+        .leaderboard-item.human {
+            background: #fff3e0;
+        }
+        
+        /* Game View */
+        .game-container {
+            display: grid;
+            grid-template-columns: 880px 1fr;
+            gap: 20px;
+        }
+        
+        .board-container {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: fit-content;
+        }
+        
+        #gameCanvas {
+            display: block;
+            margin: 0 auto;
+            background: #deb887;
+            border: 2px solid #8b4513;
+        }
+        
+        .game-info-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .game-status {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: #f44336;
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .move-history {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        
+        .move-item {
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+        
+        .move-item.opening {
+            background: #fff3e0;
+            font-style: italic;
+        }
+        
+        .button-group {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .button-group button {
+            flex: 1;
+        }
+        
+        .resign-btn {
+            background: #f44336;
+        }
+        
+        .resign-btn:hover {
+            background: #da190b;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            background: white;
+            border: none;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .tab.active {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .modal-content h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .modal-content p {
+            margin-bottom: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gomoku</h1>
+        
+        <!-- Auth View -->
+        <div id="authView" class="view active">
+            <div class="auth-box">
+                <h2>Enter Game</h2>
+                <div class="form-group">
+                    <label>Username (3-20 characters)</label>
+                    <input type="text" id="usernameInput" placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label>Token (leave empty to register)</label>
+                    <input type="text" id="tokenInput" placeholder="Enter token or leave empty">
+                </div>
+                <button id="loginBtn">Connect</button>
+                <div id="authError" class="error"></div>
+            </div>
+        </div>
+        
+        <!-- Lobby View -->
+        <div id="lobbyView" class="view">
+            <div class="tabs">
+                <button class="tab active" onclick="switchLobbyTab('waiting')">Waiting Games</button>
+                <button class="tab" onclick="switchLobbyTab('active')">Watch Games</button>
+                <button class="tab" onclick="switchLobbyTab('leaderboard')">Leaderboard</button>
+                <button class="tab" onclick="switchLobbyTab('account')">Account</button>
+            </div>
+            
+            <div id="waitingTab" class="tab-content active">
+                <div class="lobby-container">
+                    <div class="panel">
+                        <h2>Create New Game</h2>
+                        <p>Click the button below to create a new game and wait for an opponent to join.</p>
+                        <button id="createGameBtn">Create Game</button>
+                    </div>
+                    
+                    <div class="panel">
+                        <h2>Available Games</h2>
+                        <div id="lobbyGames" class="game-list">
+                            <p class="status">Loading games...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="activeTab" class="tab-content">
+                <div class="panel">
+                    <h2>Active & Recent Games</h2>
+                    <div id="activeGames" class="game-list">
+                        <p class="status">Loading games...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="leaderboardTab" class="tab-content">
+                <div class="panel">
+                    <h2>Leaderboard</h2>
+                    <div id="leaderboardList" class="leaderboard-list">
+                        <p class="status">Loading leaderboard...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="accountTab" class="tab-content">
+                <div class="panel">
+                    <h2>Your Account</h2>
+                    <div style="max-width: 600px;">
+                        <p style="margin-bottom: 20px; color: #666;">
+                            Save your credentials below to reconnect with the same account later.
+                        </p>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Username:</label>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <input type="text" id="displayUsername" readonly 
+                                       style="flex: 1; padding: 10px; font-family: monospace; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px;">
+                                <button id="copyUsernameBtn" style="padding: 10px 20px;">Copy</button>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Token:</label>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <input type="text" id="displayToken" readonly 
+                                       style="flex: 1; padding: 10px; font-family: monospace; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px;">
+                                <button id="copyTokenBtn" style="padding: 10px 20px;">Copy</button>
+                            </div>
+                        </div>
+                        
+                        <div style="padding: 15px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
+                            <strong>⚠️ Important:</strong> Keep your token safe! Anyone with your token can access your account.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Game View -->
+        <div id="gameView" class="view">
+            <div class="game-container">
+                <div class="board-container">
+                    <canvas id="gameCanvas" width="800" height="800"></canvas>
+                </div>
+                
+                <div class="game-info-panel">
+                    <div id="gameStatus" class="game-status">Waiting...</div>
+                    <div id="timer" class="timer"></div>
+                    
+                    <div class="button-group">
+                        <button id="backToLobbyBtn">Back to Lobby</button>
+                        <button id="resignBtn" class="resign-btn">Resign</button>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 10px; background: #f5f5f5; border-radius: 4px;">
+                        <label style="display: flex; align-items: center; cursor: pointer;">
+                            <input type="checkbox" id="showMoveNumbers" style="margin-right: 8px;">
+                            <span>Show move numbers on board</span>
+                        </label>
+                    </div>
+                    
+                    <div class="move-history">
+                        <h3>Move History</h3>
+                        <div id="moveHistory"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Result Modal -->
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <h2 id="resultTitle">Game Over</h2>
+            <p id="resultMessage"></p>
+            <p id="resultElo" style="font-weight: bold; margin-top: 10px; font-size: 18px;"></p>
+            <button id="resultOkBtn">Return to Lobby</button>
+        </div>
+    </div>
+    
+    <!-- Resign Confirmation Modal -->
+    <div id="resignModal" class="modal">
+        <div class="modal-content">
+            <h2>Resign Game?</h2>
+            <p>Are you sure you want to resign? You will lose this game.</p>
+            <div class="button-group">
+                <button id="confirmResignBtn" class="resign-btn">Yes, Resign</button>
+                <button id="cancelResignBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Game state
+        let ws = null;
+        let username = null;
+        let token = null;
+        let currentView = 'auth';
+        let currentGame = null;
+        let myColor = null;
+        let canvas = null;
+        let ctx = null;
+        let timerInterval = null;
+        
+        const BOARD_SIZE = 19;
+        const CELL_SIZE = 40;
+        const STONE_RADIUS = 18;
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            canvas = document.getElementById('gameCanvas');
+            ctx = canvas.getContext('2d');
+            
+            document.getElementById('loginBtn').addEventListener('click', handleLogin);
+            document.getElementById('createGameBtn').addEventListener('click', createGame);
+            document.getElementById('backToLobbyBtn').addEventListener('click', backToLobby);
+            document.getElementById('resignBtn').addEventListener('click', () => showResignModal());
+            document.getElementById('confirmResignBtn').addEventListener('click', confirmResign);
+            document.getElementById('cancelResignBtn').addEventListener('click', () => hideModal('resignModal'));
+            document.getElementById('resultOkBtn').addEventListener('click', () => {
+                hideModal('resultModal');
+                backToLobby();
+            });
+            document.getElementById('copyTokenBtn').addEventListener('click', () => copyToClipboard('token'));
+            document.getElementById('copyUsernameBtn').addEventListener('click', () => copyToClipboard('username'));
+            document.getElementById('showMoveNumbers').addEventListener('change', () => {
+                if (currentGame) {
+                    drawBoard();
+                }
+            });
+            
+            canvas.addEventListener('click', handleCanvasClick);
+            
+            // Check for saved token
+            const savedToken = localStorage.getItem('gomoku_token');
+            const savedUsername = localStorage.getItem('gomoku_username');
+            if (savedToken && savedUsername) {
+                document.getElementById('tokenInput').value = savedToken;
+                document.getElementById('usernameInput').value = savedUsername;
+            }
+        });
+        
+        // View management
+        function showView(viewName) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewName + 'View').classList.add('active');
+            currentView = viewName;
+            
+            // Update user info when showing lobby
+            if (viewName === 'lobby' && username && token) {
+                updateUserInfo();
+            }
+        }
+        
+        function updateUserInfo() {
+            document.getElementById('displayUsername').value = username;
+            document.getElementById('displayToken').value = token;
+        }
+        
+        function copyToClipboard(type) {
+            const text = type === 'username' ? username : token;
+            const btnId = type === 'username' ? 'copyUsernameBtn' : 'copyTokenBtn';
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.getElementById(btnId);
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.background = '#4CAF50';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                alert('Failed to copy. Please copy manually: ' + text);
+            });
+        }
+        
+        function switchLobbyTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            if (tabName === 'leaderboard') {
+                loadLeaderboard();
+            }
+        }
+        
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+        
+        function hideModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+        
+        function showResignModal() {
+            if (currentGame && !currentGame.game_over) {
+                showModal('resignModal');
+            }
+        }
+        
+        // Authentication
+        async function handleLogin() {
+            const usernameInput = document.getElementById('usernameInput').value.trim();
+            const tokenInput = document.getElementById('tokenInput').value.trim();
+            const errorDiv = document.getElementById('authError');
+            
+            if (!usernameInput) {
+                errorDiv.textContent = 'Please enter a username';
+                return;
+            }
+            
+            errorDiv.textContent = '';
+            
+            // If no token, register new user
+            if (!tokenInput) {
+                try {
+                    const response = await fetch(`/register?username=${usernameInput}&is_bot=false`, {
+                        method: 'POST'
+                    });
+                    const data = await response.json();
+                    
+                    if (data.error) {
+                        errorDiv.textContent = data.error;
+                        return;
+                    }
+                    
+                    token = data.token;
+                    username = data.username;
+                    
+                    // Save to localStorage
+                    localStorage.setItem('gomoku_token', token);
+                    localStorage.setItem('gomoku_username', username);
+                    
+                    errorDiv.textContent = 'Registered! Connecting...';
+                } catch (error) {
+                    errorDiv.textContent = 'Failed to register: ' + error.message;
+                    return;
+                }
+            } else {
+                token = tokenInput;
+                username = usernameInput;
+                
+                // Save to localStorage
+                localStorage.setItem('gomoku_token', token);
+                localStorage.setItem('gomoku_username', username);
+            }
+            
+            // Connect to WebSocket
+            connectWebSocket();
+        }
+        
+        function connectWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//${window.location.host}/ws`;
+            
+            ws = new WebSocket(wsUrl);
+            
+            ws.onopen = () => {
+                console.log('WebSocket connected');
+                // Authenticate
+                ws.send(JSON.stringify({
+                    type: 'authenticate',
+                    token: token
+                }));
+            };
+            
+            ws.onmessage = (event) => {
+                const message = JSON.parse(event.data);
+                handleMessage(message);
+            };
+            
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                document.getElementById('authError').textContent = 'Connection error';
+            };
+            
+            ws.onclose = () => {
+                console.log('WebSocket disconnected');
+                if (currentView !== 'auth') {
+                    // Attempt to reconnect
+                    setTimeout(connectWebSocket, 2000);
+                }
+            };
+        }
+        
+        function handleMessage(message) {
+            console.log('Received:', message);
+            
+            switch (message.type) {
+                case 'authenticated':
+                    showView('lobby');
+                    break;
+                
+                case 'ping':
+                    ws.send(JSON.stringify({ type: 'pong' }));
+                    break;
+                
+                case 'lobby_update':
+                    updateLobbyGames(message.games);
+                    break;
+                
+                case 'active_games_update':
+                    updateActiveGames(message.games);
+                    break;
+                
+                case 'game_created':
+                    currentGame = {
+                        game_id: message.game_id,
+                        waiting: true,
+                        board: Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(0)),
+                        move_history: []
+                    };
+                    myColor = message.color;
+                    document.getElementById('gameStatus').textContent = 'Waiting for opponent...';
+                    showView('game');
+                    drawBoard();
+                    break;
+                
+                case 'game_started':
+                    currentGame = {
+                        game_id: message.game_id,
+                        player1: message.player1,
+                        player2: message.player2,
+                        waiting: false,
+                        board: Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(0)),
+                        move_history: []
+                    };
+                    myColor = message.your_color;
+                    showView('game');
+                    // Draw empty board immediately so screen isn't blank
+                    drawBoard();
+                    updateGameStatus();
+                    // game_update will follow immediately with actual stones
+                    break;
+                
+                case 'game_update':
+                    // Make sure we're in game view
+                    if (currentView !== 'game' && !currentGame?.spectating) {
+                        showView('game');
+                    }
+                    updateGameState(message);
+                    break;
+                
+                case 'spectate_game':
+                    currentGame = {
+                        game_id: message.game_id,
+                        player1: message.player1,
+                        player2: message.player2,
+                        spectating: true
+                    };
+                    updateGameState(message);
+                    showView('game');
+                    break;
+                
+                case 'error':
+                    console.error('Error:', message.message);
+                    if (message.code === 'INVALID_TOKEN') {
+                        showView('auth');
+                        document.getElementById('authError').textContent = message.message;
+                    } else {
+                        alert('Error: ' + message.message);
+                    }
+                    break;
+            }
+        }
+        
+        // Lobby
+        function updateLobbyGames(games) {
+            const container = document.getElementById('lobbyGames');
+            
+            if (games.length === 0) {
+                container.innerHTML = '<p class="status">No games waiting. Create one!</p>';
+                return;
+            }
+            
+            container.innerHTML = games.map(game => `
+                <div class="game-item ${game.is_bot ? 'bot' : 'human'}" onclick="joinGame('${game.game_id}')">
+                    <div class="game-info">
+                        <div>
+                            <span class="player-name">${game.creator}</span>
+                            <span class="elo">(${game.creator_elo} ELO)</span>
+                        </div>
+                        <div class="elo">${game.is_bot ? '🤖 Bot' : '👤 Human'}</div>
+                    </div>
+                    <div class="status">Waiting ${game.waiting_time}s</div>
+                </div>
+            `).join('');
+        }
+        
+        function updateActiveGames(games) {
+            const container = document.getElementById('activeGames');
+            
+            if (games.length === 0) {
+                container.innerHTML = '<p class="status">No active games</p>';
+                return;
+            }
+            
+            container.innerHTML = games.map(game => {
+                const statusClass = game.status === 'completed' ? 'completed' : '';
+                const statusText = game.status === 'completed' 
+                    ? `Completed - ${game.winner} won` 
+                    : `Move ${game.move_count} - ${game.current_turn}'s turn`;
+                
+                return `
+                    <div class="game-item ${statusClass}" onclick="spectateGame('${game.game_id}')">
+                        <div class="game-info">
+                            <div>
+                                <span class="player-name">${game.player1}</span>
+                                <span class="elo">(${game.player1_elo})</span>
+                                vs
+                                <span class="player-name">${game.player2}</span>
+                                <span class="elo">(${game.player2_elo})</span>
+                            </div>
+                            <div class="elo">Combined: ${game.combined_elo}</div>
+                        </div>
+                        <div class="status">${statusText} | ${game.spectator_count} watching</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        async function loadLeaderboard() {
+            try {
+                const response = await fetch('/leaderboard');
+                const data = await response.json();
+                
+                const container = document.getElementById('leaderboardList');
+                container.innerHTML = data.leaderboard.map((entry, index) => `
+                    <div class="leaderboard-item ${entry.is_bot ? 'bot' : 'human'}">
+                        <div>
+                            <strong>#${index + 1} ${entry.username}</strong>
+                            ${entry.is_bot ? '🤖' : '👤'}
+                        </div>
+                        <div>
+                            <span style="font-weight: bold;">${entry.elo} ELO</span> | 
+                            ${entry.games_played} games | 
+                            ${entry.wins}W-${entry.losses}L (${entry.win_rate}%)
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load leaderboard:', error);
+            }
+        }
+        
+        function createGame() {
+            ws.send(JSON.stringify({ type: 'create_game' }));
+        }
+        
+        function joinGame(gameId) {
+            ws.send(JSON.stringify({
+                type: 'join_game',
+                game_id: gameId
+            }));
+        }
+        
+        function spectateGame(gameId) {
+            ws.send(JSON.stringify({
+                type: 'spectate',
+                game_id: gameId
+            }));
+        }
+        
+        function backToLobby() {
+            if (currentGame && !currentGame.spectating && !currentGame.game_over) {
+                if (confirm('Leave game? This will count as a resignation.')) {
+                    ws.send(JSON.stringify({ type: 'resign' }));
+                    currentGame = null;
+                    myColor = null;
+                    showView('lobby');
+                }
+            } else {
+                currentGame = null;
+                myColor = null;
+                showView('lobby');
+            }
+            
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+        
+        function confirmResign() {
+            hideModal('resignModal');
+            ws.send(JSON.stringify({ type: 'resign' }));
+        }
+        
+        // Game rendering
+        function updateGameState(state) {
+            currentGame = {
+                ...currentGame,
+                board: state.board,
+                move_history: state.move_history,
+                current_turn: state.current_turn,
+                current_player: state.current_player,
+                game_over: state.game_over,
+                winner: state.winner,
+                outcome: state.outcome,
+                time_left: state.time_left,
+                elo_changes: state.elo_changes || {}
+            };
+            
+            drawBoard();
+            updateGameStatus();
+            updateMoveHistory();
+            
+            if (state.game_over) {
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+                showGameResult();
+            } else {
+                startTimer(state.time_left);
+            }
+        }
+        
+        function drawBoard() {
+            // Clear canvas
+            ctx.fillStyle = '#deb887';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw grid
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 1;
+            
+            for (let i = 0; i < BOARD_SIZE; i++) {
+                // Vertical lines
+                ctx.beginPath();
+                ctx.moveTo(CELL_SIZE + i * CELL_SIZE, CELL_SIZE);
+                ctx.lineTo(CELL_SIZE + i * CELL_SIZE, CELL_SIZE + (BOARD_SIZE - 1) * CELL_SIZE);
+                ctx.stroke();
+                
+                // Horizontal lines
+                ctx.beginPath();
+                ctx.moveTo(CELL_SIZE, CELL_SIZE + i * CELL_SIZE);
+                ctx.lineTo(CELL_SIZE + (BOARD_SIZE - 1) * CELL_SIZE, CELL_SIZE + i * CELL_SIZE);
+                ctx.stroke();
+            }
+            
+            // Draw star points
+            const starPoints = [3, 9, 15];
+            ctx.fillStyle = '#000';
+            for (let row of starPoints) {
+                for (let col of starPoints) {
+                    ctx.beginPath();
+                    ctx.arc(CELL_SIZE + col * CELL_SIZE, CELL_SIZE + row * CELL_SIZE, 4, 0, 2 * Math.PI);
+                    ctx.fill();
+                }
+            }
+            
+            // Draw stones
+            if (currentGame && currentGame.board) {
+                for (let row = 0; row < BOARD_SIZE; row++) {
+                    for (let col = 0; col < BOARD_SIZE; col++) {
+                        const stone = currentGame.board[row][col];
+                        if (stone !== 0) {
+                            drawStone(row, col, stone);
+                        }
+                    }
+                }
+                
+                // Highlight last move
+                if (currentGame.move_history && currentGame.move_history.length > 0) {
+                    const lastMove = currentGame.move_history[currentGame.move_history.length - 1];
+                    if (!lastMove.is_opening) {
+                        ctx.strokeStyle = '#f44336';
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.arc(
+                            CELL_SIZE + lastMove.col * CELL_SIZE,
+                            CELL_SIZE + lastMove.row * CELL_SIZE,
+                            STONE_RADIUS + 3,
+                            0,
+                            2 * Math.PI
+                        );
+                        ctx.stroke();
+                    }
+                }
+                
+                // Show move numbers if checkbox is checked
+                const showNumbers = document.getElementById('showMoveNumbers')?.checked;
+                if (showNumbers && currentGame.move_history) {
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.font = 'bold 12px Arial';
+                    
+                    currentGame.move_history.forEach((move, index) => {
+                        const x = CELL_SIZE + move.col * CELL_SIZE;
+                        const y = CELL_SIZE + move.row * CELL_SIZE;
+                        
+                        // Draw move number
+                        // Use contrasting color: white text on black stones, black text on white stones
+                        const stoneColor = currentGame.board[move.row][move.col];
+                        ctx.fillStyle = stoneColor === 1 ? '#fff' : '#000';
+                        ctx.fillText(String(index + 1), x, y);
+                    });
+                }
+            }
+            
+            // Update cursor based on player color
+            updateCursor();
+        }
+        
+        function updateCursor() {
+            if (!currentGame || currentGame.game_over || currentGame.spectating || currentGame.waiting) {
+                canvas.style.cursor = 'default';
+                return;
+            }
+            
+            if (currentGame.current_turn !== myColor) {
+                canvas.style.cursor = 'not-allowed';
+                return;
+            }
+            
+            // Create custom cursor showing the stone color
+            // Stone radius is 18px, so make cursor 40x40 (a bit larger for visibility)
+            const size = 48;
+            const radius = 18;
+            const center = size / 2;
+            
+            if (myColor === 1) {
+                // Black stone
+                const svg = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+                        <circle cx="${center}" cy="${center}" r="${radius}" fill="#000" stroke="#000" stroke-width="1"/>
+                    </svg>
+                `;
+                const encoded = 'data:image/svg+xml;base64,' + btoa(svg);
+                canvas.style.cursor = `url('${encoded}') ${center} ${center}, pointer`;
+            } else {
+                // White stone
+                const svg = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+                        <circle cx="${center}" cy="${center}" r="${radius}" fill="#fff" stroke="#000" stroke-width="1"/>
+                    </svg>
+                `;
+                const encoded = 'data:image/svg+xml;base64,' + btoa(svg);
+                canvas.style.cursor = `url('${encoded}') ${center} ${center}, pointer`;
+            }
+        }
+        
+        function drawStone(row, col, color) {
+            const x = CELL_SIZE + col * CELL_SIZE;
+            const y = CELL_SIZE + row * CELL_SIZE;
+            
+            // Draw stone
+            ctx.fillStyle = color === 1 ? '#000' : '#fff';
+            ctx.beginPath();
+            ctx.arc(x, y, STONE_RADIUS, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Draw border
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+        }
+        
+        function handleCanvasClick(event) {
+            if (!currentGame || currentGame.game_over || currentGame.spectating || currentGame.waiting) {
+                return;
+            }
+            
+            if (currentGame.current_turn !== myColor) {
+                return;
+            }
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            
+            // Convert to board coordinates
+            const col = Math.round((x - CELL_SIZE) / CELL_SIZE);
+            const row = Math.round((y - CELL_SIZE) / CELL_SIZE);
+            
+            if (row >= 0 && row < BOARD_SIZE && col >= 0 && col < BOARD_SIZE) {
+                if (currentGame.board[row][col] === 0) {
+                    ws.send(JSON.stringify({
+                        type: 'make_move',
+                        row: row,
+                        col: col
+                    }));
+                }
+            }
+        }
+        
+        function updateGameStatus() {
+            const statusDiv = document.getElementById('gameStatus');
+            const resignBtn = document.getElementById('resignBtn');
+            
+            if (!currentGame) {
+                statusDiv.textContent = 'No game';
+                resignBtn.style.display = 'none';
+                return;
+            }
+            
+            if (currentGame.spectating) {
+                // Hide resign button when spectating
+                resignBtn.style.display = 'none';
+                
+                if (currentGame.game_over) {
+                    statusDiv.textContent = `Game Over - ${currentGame.winner} won`;
+                } else {
+                    statusDiv.textContent = `${currentGame.current_player}'s turn`;
+                }
+                return;
+            }
+            
+            // Show resign button when playing
+            resignBtn.style.display = '';
+            
+            if (currentGame.waiting) {
+                statusDiv.textContent = 'Waiting for opponent...';
+                return;
+            }
+            
+            if (currentGame.game_over) {
+                const youWon = currentGame.winner === username;
+                statusDiv.textContent = youWon ? 'You Won!' : 'You Lost';
+                statusDiv.style.background = youWon ? '#4CAF50' : '#f44336';
+                statusDiv.style.color = 'white';
+                return;
+            }
+            
+            const yourTurn = currentGame.current_turn === myColor;
+            const colorName = myColor === 1 ? 'Black' : 'White';
+            
+            if (yourTurn) {
+                statusDiv.textContent = `Your turn (${colorName})`;
+                statusDiv.style.background = '#4CAF50';
+                statusDiv.style.color = 'white';
+            } else {
+                statusDiv.textContent = `Opponent's turn`;
+                statusDiv.style.background = '#f0f0f0';
+                statusDiv.style.color = '#333';
+            }
+        }
+        
+        function updateMoveHistory() {
+            if (!currentGame || !currentGame.move_history) {
+                return;
+            }
+            
+            const container = document.getElementById('moveHistory');
+            container.innerHTML = currentGame.move_history.map((move, index) => {
+                const colorName = move.color === 1 ? 'Black' : 'White';
+                const annotation = move.is_opening ? ' - Opening' : '';
+                const className = move.is_opening ? 'opening' : '';
+                
+                return `
+                    <div class="move-item ${className}">
+                        ${index + 1}. (${move.row},${move.col}) ${colorName}${annotation}
+                    </div>
+                `;
+            }).join('');
+            
+            // Scroll to bottom
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function startTimer(timeLeft) {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            
+            const timerDiv = document.getElementById('timer');
+            
+            if (currentGame.spectating || currentGame.game_over) {
+                timerDiv.textContent = '';
+                return;
+            }
+            
+            const updateTimer = () => {
+                if (!currentGame || currentGame.game_over) {
+                    timerDiv.textContent = '';
+                    clearInterval(timerInterval);
+                    return;
+                }
+                
+                const yourTurn = currentGame.current_turn === myColor;
+                if (!yourTurn) {
+                    timerDiv.textContent = '';
+                    return;
+                }
+                
+                const seconds = Math.ceil(currentGame.time_left);
+                timerDiv.textContent = `${seconds}s remaining`;
+                
+                if (currentGame.time_left > 0) {
+                    currentGame.time_left -= 0.1;
+                }
+            };
+            
+            currentGame.time_left = timeLeft;
+            updateTimer();
+            timerInterval = setInterval(updateTimer, 100);
+        }
+        
+        function showGameResult() {
+            if (currentGame.spectating) {
+                return;
+            }
+            
+            const modal = document.getElementById('resultModal');
+            const title = document.getElementById('resultTitle');
+            const message = document.getElementById('resultMessage');
+            const eloDiv = document.getElementById('resultElo');
+            
+            const youWon = currentGame.winner === username;
+            const eloChange = currentGame.elo_changes?.[username];
+            
+            // Display ELO change if available
+            if (eloChange !== undefined && eloChange !== null) {
+                const sign = eloChange > 0 ? '+' : '';
+                eloDiv.textContent = `ELO Change: ${sign}${eloChange}`;
+                eloDiv.style.color = eloChange > 0 ? '#4CAF50' : (eloChange < 0 ? '#f44336' : '#666');
+            } else {
+                eloDiv.textContent = '';
+            }
+            
+            if (currentGame.outcome === 'DRAW') {
+                title.textContent = 'Draw';
+                message.textContent = 'The game ended in a draw.';
+            } else if (youWon) {
+                title.textContent = 'Victory!';
+                let outcomeText = 'You won the game!';
+                if (currentGame.outcome === 'WIN_RESIGN') {
+                    outcomeText = 'Your opponent resigned.';
+                } else if (currentGame.outcome === 'WIN_TIMEOUT') {
+                    outcomeText = 'Your opponent timed out.';
+                } else if (currentGame.outcome === 'WIN_DISCONNECT') {
+                    outcomeText = 'Your opponent disconnected.';
+                }
+                message.textContent = outcomeText;
+            } else {
+                title.textContent = 'Defeat';
+                let outcomeText = 'You lost the game.';
+                if (currentGame.outcome === 'WIN_RESIGN') {
+                    outcomeText = 'You resigned.';
+                } else if (currentGame.outcome === 'WIN_TIMEOUT') {
+                    outcomeText = 'You timed out.';
+                } else if (currentGame.outcome === 'WIN_DISCONNECT') {
+                    outcomeText = 'You disconnected.';
+                }
+                message.textContent = outcomeText;
+            }
+            
+            showModal('resultModal');
+        }
+    </script>
+</body>
+</html>
