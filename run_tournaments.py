@@ -63,7 +63,7 @@ class TournamentRunner:
         self.http_server = server_url.replace("ws://", "http://").replace("wss://", "https://").replace("/ws", "")
         self.websocket: Optional[websockets.WebSocketClientProtocol] = None
         self.token: Optional[str] = None  # Tournament runner's auth token
-        self.pending_games = {}
+        self.pending_games = {}  # game_id -> (player1, player2)
         self.completed_games = {}
         self.tournaments = {}
         self.bot_processes = []
@@ -146,6 +146,12 @@ class TournamentRunner:
         available_bot_names = [bot["username"] for bot in bots_list]
         
         availability = {bot: bot in available_bot_names for bot in bot_names}
+        
+        # Debug: show unavailable bots
+        for bot in bot_names:
+            if not availability[bot]:
+                print(f"    [DEBUG] {bot} is NOT in available list: {available_bot_names[:10]}...")
+        
         return availability
     
     async def force_game(self, player1: str, player2: str) -> Optional[str]:
@@ -162,7 +168,14 @@ class TournamentRunner:
                 response = json.loads(await asyncio.wait_for(self.websocket.recv(), timeout=0.5))
                 if response.get("type") == "forced_game_created":
                     game_id = response.get("game_id")
+                    # Store player names for this game
+                    self.pending_games[game_id] = (player1, player2)
                     print(f"  Game created: {player1} vs {player2} (ID: {game_id})")
+                    # Join as spectator to receive game updates
+                    await self.websocket.send(json.dumps({
+                        "type": "spectate",
+                        "game_id": game_id
+                    }))
                     return game_id
         except asyncio.TimeoutError:
             print(f"  ✗ Timeout creating game {player1} vs {player2}")
@@ -179,13 +192,22 @@ class TournamentRunner:
             try:
                 response = json.loads(await asyncio.wait_for(self.websocket.recv(), timeout=1))
                 
-                if response.get("type") == "game_result":
+                # Debug: show message types received
+                msg_type = response.get("type")
+                if msg_type not in ["ping", "pong", "lobby_update", "active_games_update"]:
+                    print(f"    [DEBUG] Received: {msg_type} {list(response.keys())}")
+                
+                # Server sends game_update with game_over, not game_result
+                if msg_type == "game_update" and response.get("game_over"):
                     result_game_id = response.get("game_id")
                     if result_game_id == game_id:
                         winner = response.get("winner")
-                        player1 = response.get("player1")
-                        player2 = response.get("player2")
-                        outcome_type = response.get("outcome_type", "UNKNOWN")
+                        outcome_type = response.get("outcome", "UNKNOWN")
+                        # Get player names from stored pending games
+                        player1, player2 = self.pending_games.get(game_id, ("unknown", "unknown"))
+                        # Clean up pending games
+                        if game_id in self.pending_games:
+                            del self.pending_games[game_id]
                         
                         match = MatchResult(
                             player1=player1,
@@ -220,16 +242,19 @@ class TournamentRunner:
         for i in range(num_matches):
             print(f"\nMatch {i+1}/{num_matches}:")
             
-            # Check availability
-            availability = await self.check_bot_availability([player1, player2])
-            if not availability[player1] or not availability[player2]:
-                print(f"  ✗ One or both bots unavailable. Waiting 2s...")
-                await asyncio.sleep(2)
-                # Retry availability
+            # Check availability with retries
+            max_retries = 5
+            for retry in range(max_retries):
                 availability = await self.check_bot_availability([player1, player2])
-                if not availability[player1] or not availability[player2]:
-                    print(f"  ✗ Bots still unavailable. Skipping match {i+1}")
-                    continue
+                if availability[player1] and availability[player2]:
+                    break
+                if retry == 0:
+                    print(f"  ⏳ Bots not yet available, waiting...")
+                await asyncio.sleep(3)  # Wait 3 seconds between retries
+            
+            if not availability[player1] or not availability[player2]:
+                print(f"  ✗ Bots still unavailable after {max_retries} retries. Skipping match {i+1}")
+                continue
             
             # Start game
             game_id = await self.force_game(player1, player2)
@@ -245,9 +270,9 @@ class TournamentRunner:
             else:
                 print(f"  ✗ No result received for game {game_id}")
             
-            # Small delay between matches to avoid overload
+            # Small delay between matches to let server clean up
             if i < num_matches - 1:
-                await asyncio.sleep(1)
+                await asyncio.sleep(3)
         
         tournament.print_summary()
         return tournament

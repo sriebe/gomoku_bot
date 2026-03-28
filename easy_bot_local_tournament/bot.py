@@ -110,10 +110,12 @@ class GomokuBot:
                 else:
                     print(f"[BOT] Game ended in a draw.")
                 
-                # Wait a bit then find another game
+                # Wait a bit then reset state - DON'T auto-create new game
+                # Tournament runner will force games for us
                 await asyncio.sleep(1)
                 self.reset_game_state()
-                await self.find_game()
+                # Wait for tournament runner to initiate next game
+                print(f"[BOT] Game complete, waiting for tournament runner...")
             
             elif current_turn == self.my_color:
                 # It's my turn
