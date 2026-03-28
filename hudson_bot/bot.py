@@ -4,6 +4,7 @@ import json
 import random
 import sys
 import os
+import time
 
 # Load configuration from config.json
 def load_config():
@@ -32,10 +33,20 @@ WHITE = 2
 
 # Minimax tuning knobs
 WIN_SCORE = 10_000_000
-MAX_CANDIDATES = 12
 NEIGHBOR_RADIUS = 2
+EARLYGAME_CANDIDATES = 8
+MIDGAME_CANDIDATES = 12
+ENDGAME_CANDIDATES = 16
+EARLYGAME_DEPTH = 1
 MIDGAME_DEPTH = 2
 ENDGAME_DEPTH = 3
+MAX_ITERATIVE_DEPTH = 5
+MOVE_TIME_LIMIT_SEC = 5.0
+TIME_SAFETY_MARGIN_SEC = 0.35
+
+
+class SearchTimeout(Exception):
+    """Raised when minimax search exceeds the move time budget."""
 
 class GomokuBot:
     def __init__(self, token, username):
@@ -179,53 +190,107 @@ class GomokuBot:
             return (center, center)
 
         empty_count = count_empty_cells(board)
-        depth = ENDGAME_DEPTH if empty_count <= 45 else MIDGAME_DEPTH
+        depth = choose_search_depth(empty_count)
+        max_candidates = choose_candidate_limit(empty_count)
 
         candidate_moves = generate_candidate_moves(
             board,
             my_color,
             opponent_color,
-            MAX_CANDIDATES,
+            max_candidates,
             NEIGHBOR_RADIUS,
         )
 
         if not candidate_moves:
             return find_first_empty(board)
 
+        fallback_random_move = random.choice(candidate_moves)
+        best_move_so_far = candidate_moves[0]
+
         # Tactical fast-path: take immediate win if available.
-        for row, col in candidate_moves:
-            board[row][col] = my_color
-            winning_now = is_winning_move(board, row, col, my_color)
-            board[row][col] = EMPTY
-            if winning_now:
-                return (row, col)
+        winning_moves = find_immediate_winning_moves(board, my_color, candidate_moves)
+        if winning_moves:
+            return winning_moves[0]
 
-        best_score = -float("inf")
-        best_moves = []
+        opponent_winning_moves = find_immediate_winning_moves(board, opponent_color)
+        if len(opponent_winning_moves) == 1:
+            return opponent_winning_moves[0]
 
-        for row, col in candidate_moves:
-            board[row][col] = my_color
-            score = minimax(
-                board,
-                depth - 1,
-                -float("inf"),
-                float("inf"),
-                False,
-                my_color,
-                opponent_color,
-                row,
-                col,
-            )
-            board[row][col] = EMPTY
+        if opponent_winning_moves:
+            blocking_moves = [move for move in candidate_moves if move in set(opponent_winning_moves)]
+            if blocking_moves:
+                candidate_moves = blocking_moves
 
-            if score > best_score:
-                best_score = score
-                best_moves = [(row, col)]
-            elif score == best_score:
-                best_moves.append((row, col))
+        # Keep a strict buffer under 5s to avoid forfeit on server-side time checks.
+        deadline = time.perf_counter() + max(0.05, MOVE_TIME_LIMIT_SEC - TIME_SAFETY_MARGIN_SEC)
+        search_depth = min(MAX_ITERATIVE_DEPTH, depth + 1)
 
-        if best_moves:
-            return random.choice(best_moves)
+        completed_depth_best = None
+
+        for current_depth in range(1, search_depth + 1):
+            if time.perf_counter() >= deadline:
+                break
+
+            best_score = -float("inf")
+            current_best_moves = []
+            scored_moves = []
+
+            depth_completed = True
+
+            try:
+                for row, col in candidate_moves:
+                    if time.perf_counter() >= deadline:
+                        raise SearchTimeout()
+
+                    board[row][col] = my_color
+                    try:
+                        score = minimax(
+                            board,
+                            current_depth - 1,
+                            -float("inf"),
+                            float("inf"),
+                            False,
+                            my_color,
+                            opponent_color,
+                            row,
+                            col,
+                            deadline,
+                        )
+                    finally:
+                        board[row][col] = EMPTY
+
+                    scored_moves.append((score, row, col))
+
+                    if score > best_score:
+                        best_score = score
+                        current_best_moves = [(row, col)]
+                    elif score == best_score:
+                        current_best_moves.append((row, col))
+
+            except SearchTimeout:
+                depth_completed = False
+
+            if scored_moves:
+                # Principal-variation style ordering helps pruning on deeper iterations.
+                scored_moves.sort(reverse=True)
+                candidate_moves = [(r, c) for _, r, c in scored_moves]
+                if not completed_depth_best:
+                    best_move_so_far = candidate_moves[0]
+
+            if depth_completed and current_best_moves:
+                completed_depth_best = current_best_moves[0]
+                best_move_so_far = completed_depth_best
+            else:
+                break
+
+        if completed_depth_best:
+            return completed_depth_best
+
+        if best_move_so_far:
+            return best_move_so_far
+
+        if fallback_random_move:
+            return fallback_random_move
 
         return find_first_empty(board)
     
@@ -583,8 +648,11 @@ def pick_highest(board, rankings):
         return None
 
 
-def minimax(board, depth, alpha, beta, is_maximizing, my_color, opponent_color, last_row, last_col):
+def minimax(board, depth, alpha, beta, is_maximizing, my_color, opponent_color, last_row, last_col, deadline):
     """Minimax search with alpha-beta pruning over a reduced candidate set."""
+    if time.perf_counter() >= deadline:
+        raise SearchTimeout()
+
     last_player = opponent_color if is_maximizing else my_color
     if is_winning_move(board, last_row, last_col, last_player):
         # Prefer faster wins and slower losses.
@@ -592,8 +660,23 @@ def minimax(board, depth, alpha, beta, is_maximizing, my_color, opponent_color, 
             return WIN_SCORE + depth
         return -WIN_SCORE - depth
 
-    if depth == 0 or is_board_full(board):
-        return evaluate_board(board, my_color, opponent_color)
+    current_color = my_color if is_maximizing else opponent_color
+    other_color = opponent_color if is_maximizing else my_color
+
+    immediate_wins = find_immediate_winning_moves(board, current_color)
+    if immediate_wins:
+        if current_color == my_color:
+            return WIN_SCORE - depth
+        return -WIN_SCORE + depth
+
+    empty_count = count_empty_cells(board)
+
+    if depth == 0 or empty_count == 0:
+        return evaluate_board(board, my_color, opponent_color, current_color)
+
+    max_candidates = choose_candidate_limit(empty_count)
+
+    forced_blocks = find_immediate_winning_moves(board, other_color)
 
     if is_maximizing:
         value = -float("inf")
@@ -601,26 +684,39 @@ def minimax(board, depth, alpha, beta, is_maximizing, my_color, opponent_color, 
             board,
             my_color,
             opponent_color,
-            MAX_CANDIDATES,
+            max_candidates,
             NEIGHBOR_RADIUS,
         )
+
+        if forced_blocks:
+            forced_set = set(forced_blocks)
+            forced_moves = [move for move in moves if move in forced_set]
+            if not forced_moves:
+                return -WIN_SCORE + depth
+            moves = forced_moves
+
         if not moves:
             return evaluate_board(board, my_color, opponent_color)
 
         for row, col in moves:
+            if time.perf_counter() >= deadline:
+                raise SearchTimeout()
             board[row][col] = my_color
-            score = minimax(
-                board,
-                depth - 1,
-                alpha,
-                beta,
-                False,
-                my_color,
-                opponent_color,
-                row,
-                col,
-            )
-            board[row][col] = EMPTY
+            try:
+                score = minimax(
+                    board,
+                    depth - 1,
+                    alpha,
+                    beta,
+                    False,
+                    my_color,
+                    opponent_color,
+                    row,
+                    col,
+                    deadline,
+                )
+            finally:
+                board[row][col] = EMPTY
             value = max(value, score)
             alpha = max(alpha, value)
             if beta <= alpha:
@@ -632,26 +728,39 @@ def minimax(board, depth, alpha, beta, is_maximizing, my_color, opponent_color, 
         board,
         opponent_color,
         my_color,
-        MAX_CANDIDATES,
+        max_candidates,
         NEIGHBOR_RADIUS,
     )
+
+    if forced_blocks:
+        forced_set = set(forced_blocks)
+        forced_moves = [move for move in moves if move in forced_set]
+        if not forced_moves:
+            return WIN_SCORE - depth
+        moves = forced_moves
+
     if not moves:
         return evaluate_board(board, my_color, opponent_color)
 
     for row, col in moves:
+        if time.perf_counter() >= deadline:
+            raise SearchTimeout()
         board[row][col] = opponent_color
-        score = minimax(
-            board,
-            depth - 1,
-            alpha,
-            beta,
-            True,
-            my_color,
-            opponent_color,
-            row,
-            col,
-        )
-        board[row][col] = EMPTY
+        try:
+            score = minimax(
+                board,
+                depth - 1,
+                alpha,
+                beta,
+                True,
+                my_color,
+                opponent_color,
+                row,
+                col,
+                deadline,
+            )
+        finally:
+            board[row][col] = EMPTY
         value = min(value, score)
         beta = min(beta, value)
         if beta <= alpha:
@@ -659,24 +768,37 @@ def minimax(board, depth, alpha, beta, is_maximizing, my_color, opponent_color, 
     return value
 
 
-def evaluate_board(board, my_color, opponent_color):
+def evaluate_board(board, my_color, opponent_color, to_move_color):
     """Static board evaluation used at minimax depth cutoff."""
+    opponent_to_move = 3 - to_move_color
+    to_move_wins = find_immediate_winning_moves(board, to_move_color)
+    opponent_wins = find_immediate_winning_moves(board, opponent_to_move)
+
+    if to_move_wins:
+        if to_move_color == my_color:
+            return WIN_SCORE // 2 + len(to_move_wins) * 1_000
+        return -WIN_SCORE // 2 - len(to_move_wins) * 1_000
+
+    if opponent_wins:
+        if opponent_to_move == my_color:
+            return WIN_SCORE // 3 + len(opponent_wins) * 800
+        return -WIN_SCORE // 3 - len(opponent_wins) * 800
+
     my_best, my_top_sum = best_and_top_sum_scores(board, my_color, opponent_color, top_n=3)
     opp_best, opp_top_sum = best_and_top_sum_scores(board, opponent_color, my_color, top_n=3)
 
-    # Emphasize strongest tactical moves while still considering broader pressure.
-    return (my_best * 3 + my_top_sum) - (opp_best * 3 + opp_top_sum)
+    # Slightly defense-biased weighting performs better against aggressive heuristic bots.
+    return (my_best * 4 + my_top_sum * 2) - (opp_best * 6 + opp_top_sum * 2)
 
 
 def best_and_top_sum_scores(board, my_color, opponent_color, top_n=3):
-    rankings = [[0 for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
-    rank_cells(board, rankings, my_color, opponent_color)
-
     scores = []
-    for row in range(BOARD_SIZE):
-        for col in range(BOARD_SIZE):
-            if board[row][col] == EMPTY:
-                scores.append(rankings[row][col])
+    candidate_cells = collect_candidate_cells(board, NEIGHBOR_RADIUS)
+    if not candidate_cells:
+        candidate_cells = collect_candidate_cells(board, BOARD_SIZE)
+
+    for row, col in candidate_cells:
+        scores.append(score_cell(board, row, col, my_color, opponent_color))
 
     if not scores:
         return (0, 0)
@@ -691,39 +813,114 @@ def generate_candidate_moves(board, active_color, passive_color, max_candidates,
 
     Restricting search to nearby/high-score cells keeps minimax tractable on 19x19.
     """
-    rankings = [[0 for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
-    rank_cells(board, rankings, active_color, passive_color)
-
     if is_board_empty(board):
         center = BOARD_SIZE // 2
         return [(center, center)]
 
-    scored_moves = []
+    combined_moves = []
+    offensive_moves = []
+    defensive_moves = []
     center = BOARD_SIZE // 2
 
+    candidate_cells = collect_candidate_cells(board, neighbor_radius)
+    if not candidate_cells:
+        candidate_cells = collect_candidate_cells(board, 99)
+
+    for row, col in candidate_cells:
+        dist = abs(row - center) + abs(col - center)
+        offensive_score = score_cell(board, row, col, active_color, passive_color)
+        defensive_score = score_cell(board, row, col, passive_color, active_color)
+        combined_score = offensive_score + defensive_score - (dist * 0.01)
+        combined_moves.append((combined_score, row, col))
+        offensive_moves.append((offensive_score - (dist * 0.01), row, col))
+        defensive_moves.append((defensive_score - (dist * 0.01), row, col))
+
+    combined_moves.sort(reverse=True)
+    offensive_moves.sort(reverse=True)
+    defensive_moves.sort(reverse=True)
+
+    selected = {}
+    for score, row, col in combined_moves[:max_candidates]:
+        selected[(row, col)] = score
+    for score, row, col in offensive_moves[:max_candidates // 2]:
+        selected[(row, col)] = max(selected.get((row, col), -float("inf")), score)
+    for score, row, col in defensive_moves[:max_candidates // 2]:
+        selected[(row, col)] = max(selected.get((row, col), -float("inf")), score)
+
+    ordered_moves = sorted(
+        ((score, row, col) for (row, col), score in selected.items()),
+        reverse=True,
+    )
+    return [(row, col) for _, row, col in ordered_moves[:max_candidates]]
+
+
+def collect_candidate_cells(board, neighbor_radius):
+    cells = []
     for row in range(BOARD_SIZE):
         for col in range(BOARD_SIZE):
             if board[row][col] != EMPTY:
                 continue
-            if not has_neighbor(board, row, col, neighbor_radius):
+            if neighbor_radius < BOARD_SIZE and not has_neighbor(board, row, col, neighbor_radius):
                 continue
+            cells.append((row, col))
+    return cells
 
-            # Mild center bias to stabilize opening and tie-break ordering.
-            dist = abs(row - center) + abs(col - center)
-            score = rankings[row][col] - (dist * 0.01)
-            scored_moves.append((score, row, col))
 
-    if not scored_moves:
-        for row in range(BOARD_SIZE):
-            for col in range(BOARD_SIZE):
-                if board[row][col] == EMPTY:
-                    dist = abs(row - center) + abs(col - center)
-                    score = rankings[row][col] - (dist * 0.01)
-                    scored_moves.append((score, row, col))
+def score_cell(board, row, col, my_color, opponent_color):
+    """Score one empty cell by summing directional pattern scores."""
+    if board[row][col] != EMPTY:
+        return -float("inf")
 
-    scored_moves.sort(reverse=True)
-    top_moves = scored_moves[:max_candidates]
-    return [(row, col) for _, row, col in top_moves]
+    wheel = [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]
+    score = 0
+
+    for v, h in wheel:
+        nearby = [3, 3, 3, 3, 0, 3, 3, 3, 3]
+
+        for i in range(1, 5):
+            r, c = row - v * i, col - h * i
+            if 0 <= r < BOARD_SIZE and 0 <= c < BOARD_SIZE:
+                nearby[4 - i] = board[r][c]
+
+        for i in range(1, 5):
+            r, c = row + v * i, col + h * i
+            if 0 <= r < BOARD_SIZE and 0 <= c < BOARD_SIZE:
+                nearby[4 + i] = board[r][c]
+
+        score += score_row(nearby, my_color, opponent_color)
+
+    return score
+
+
+def choose_search_depth(empty_count):
+    if empty_count > 300:
+        return EARLYGAME_DEPTH
+    if empty_count > 90:
+        return MIDGAME_DEPTH
+    return ENDGAME_DEPTH
+
+
+def choose_candidate_limit(empty_count):
+    if empty_count > 300:
+        return EARLYGAME_CANDIDATES
+    if empty_count > 90:
+        return MIDGAME_CANDIDATES
+    return ENDGAME_CANDIDATES
+
+
+def find_immediate_winning_moves(board, color, candidate_moves=None):
+    winning_moves = []
+    if candidate_moves is None:
+        candidate_moves = collect_candidate_cells(board, 1)
+
+    for row, col in candidate_moves:
+        board[row][col] = color
+        winning_now = is_winning_move(board, row, col, color)
+        board[row][col] = EMPTY
+        if winning_now:
+            winning_moves.append((row, col))
+
+    return winning_moves
 
 
 def has_neighbor(board, row, col, radius):
