@@ -67,11 +67,11 @@ def create_account_from_args(username, server_url="http://localhost:8000"):
         
     except requests.exceptions.Timeout:
         print(f"✗ Error: Request timed out after 5 seconds")
-        print(f"  The server at {server_url} is not responding.")
+        print("  Make sure the server is running!")
         return False
     except requests.exceptions.ConnectionError:
         print(f"✗ Error: Could not connect to server at {server_url}")
-        print(f"  The server is not accessible at this address.")
+        print("  Make sure the server is running!")
         return False
     except Exception as e:
         print(f"✗ Error: {e}")
@@ -82,11 +82,9 @@ def create_account():
     config = load_config()
     
     print("\n=== Create New Bot Account ===")
-    print("Note: The server must be running before creating an account.")
-    print("      Test in your browser first: http://localhost:8000")
     
     # Get server URL
-    server_url = input(f"\nServer URL (default: http://localhost:8000): ").strip()
+    server_url = input(f"Server URL (default: http://localhost:8000): ").strip()
     if not server_url:
         server_url = "http://localhost:8000"
     
