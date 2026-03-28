@@ -4,6 +4,7 @@ import json
 import random
 import sys
 import os
+import time
 
 # Load configuration from config.json
 def load_config():
@@ -29,6 +30,369 @@ BOARD_SIZE = 19
 EMPTY = 0
 BLACK = 1
 WHITE = 2
+
+# Search / evaluation
+DIRS = ((0, 1), (1, 0), (1, 1), (1, -1))
+INF = 10**9
+# Stay under a 5s server turn limit
+MOVE_TIME_BUDGET_SEC = 4.9
+MAX_CANDIDATES = 18
+MAX_DEPTH_CAP = 8
+NODE_CHECK_INTERVAL = 2048
+
+# Pattern weights for full-board segment evaluation (both sides)
+W_FIVE = 200_000
+W_OPEN_FOUR = 45_000
+W_CLOSED_FOUR = 6_000
+W_OPEN_THREE = 900
+W_CLOSED_THREE = 90
+W_OPEN_TWO = 40
+W_CLOSED_TWO = 8
+W_SINGLE = 2
+
+
+class SearchTimeout(Exception):
+    pass
+
+
+def _opp(color):
+    return 3 - color
+
+
+def _in_bounds(r, c):
+    return 0 <= r < BOARD_SIZE and 0 <= c < BOARD_SIZE
+
+
+def check_five(board, r, c, color):
+    """True if placing `color` at (r,c) completes five (call after board[r][c]=color)."""
+    for dr, dc in DIRS:
+        line = 1
+        for sign in (-1, 1):
+            k = 1
+            while True:
+                rr, cc = r + dr * sign * k, c + dc * sign * k
+                if not _in_bounds(rr, cc) or board[rr][cc] != color:
+                    break
+                line += 1
+                k += 1
+        if line >= 5:
+            return True
+    return False
+
+
+def find_immediate_win(board, color):
+    """Return (r,c) if any empty cell wins for `color`, else None."""
+    for r, c in threat_space_candidates(board):
+        if board[r][c] != EMPTY:
+            continue
+        board[r][c] = color
+        won = check_five(board, r, c, color)
+        board[r][c] = EMPTY
+        if won:
+            return (r, c)
+    return None
+
+
+def board_has_stones(board):
+    for r in range(BOARD_SIZE):
+        for c in range(BOARD_SIZE):
+            if board[r][c] != EMPTY:
+                return True
+    return False
+
+
+def threat_space_candidates(board):
+    """
+    Threat-space: empty intersections within Chebyshev distance 2 of any stone.
+    If the board is empty, prefer the center area.
+    """
+    out = []
+    if not board_has_stones(board):
+        for r in range(7, 12):
+            for c in range(7, 12):
+                if board[r][c] == EMPTY:
+                    out.append((r, c))
+        return out if out else [(BOARD_SIZE // 2, BOARD_SIZE // 2)]
+
+    seen = set()
+    for r in range(BOARD_SIZE):
+        for c in range(BOARD_SIZE):
+            if board[r][c] == EMPTY:
+                continue
+            for dr in range(-2, 3):
+                for dc in range(-2, 3):
+                    rr, cc = r + dr, c + dc
+                    if not _in_bounds(rr, cc) or board[rr][cc] != EMPTY:
+                        continue
+                    if (rr, cc) not in seen:
+                        seen.add((rr, cc))
+                        out.append((rr, cc))
+    return out
+
+
+def _segment_pattern_score(length, left_empty, right_empty):
+    if length >= 5:
+        return W_FIVE
+    if length == 4:
+        if left_empty and right_empty:
+            return W_OPEN_FOUR
+        if left_empty or right_empty:
+            return W_CLOSED_FOUR
+        return 0
+    if length == 3:
+        if left_empty and right_empty:
+            return W_OPEN_THREE
+        if left_empty or right_empty:
+            return W_CLOSED_THREE
+        return 0
+    if length == 2:
+        if left_empty and right_empty:
+            return W_OPEN_TWO
+        if left_empty or right_empty:
+            return W_CLOSED_TWO
+        return 0
+    if length == 1:
+        if left_empty and right_empty:
+            return W_SINGLE * 2
+        if left_empty or right_empty:
+            return W_SINGLE
+    return 0
+
+
+def evaluate_side_segments(board, color):
+    """Sum pattern scores for all contiguous runs of `color` along four directions."""
+    total = 0
+    for dr, dc in DIRS:
+        for r in range(BOARD_SIZE):
+            for c in range(BOARD_SIZE):
+                if board[r][c] != color:
+                    continue
+                pr, pc = r - dr, c - dc
+                if _in_bounds(pr, pc) and board[pr][pc] == color:
+                    continue
+                length = 0
+                rr, cc = r, c
+                while _in_bounds(rr, cc) and board[rr][cc] == color:
+                    length += 1
+                    rr += dr
+                    cc += dc
+                lr, lc = r - dr, c - dc
+                left_empty = _in_bounds(lr, lc) and board[lr][lc] == EMPTY
+                right_empty = _in_bounds(rr, cc) and board[rr][cc] == EMPTY
+                total += _segment_pattern_score(length, left_empty, right_empty)
+    return total
+
+
+def evaluate_board(board, root_color):
+    """Heuristic from perspective of root_color (positive = good for root)."""
+    opp = _opp(root_color)
+    return evaluate_side_segments(board, root_color) - evaluate_side_segments(board, opp)
+
+
+def tactical_move_order_key(board, r, c, player):
+    """Cheap local score for move ordering inside negamax (placed cell is empty before sim)."""
+    board[r][c] = player
+    key = 0
+    o = _opp(player)
+    for dr, dc in DIRS:
+        my_run = 1
+        for sign in (-1, 1):
+            k = 1
+            while True:
+                rr, cc = r + dr * sign * k, c + dc * sign * k
+                if not _in_bounds(rr, cc):
+                    break
+                if board[rr][cc] == player:
+                    my_run += 1
+                elif board[rr][cc] == EMPTY:
+                    break
+                else:
+                    break
+                k += 1
+        key += my_run * my_run * 50
+        opp_adj = 0
+        for sign in (-1, 1):
+            k = 1
+            while True:
+                rr, cc = r + dr * sign * k, c + dc * sign * k
+                if not _in_bounds(rr, cc):
+                    break
+                if board[rr][cc] == o:
+                    opp_adj += 1
+                elif board[rr][cc] == EMPTY:
+                    break
+                else:
+                    break
+                k += 1
+        key += opp_adj * opp_adj * 40
+    board[r][c] = EMPTY
+    return key
+
+
+def ordered_threat_moves(board, color, moves, limit):
+    if not moves:
+        return []
+    move_set = set(moves)
+    win = find_immediate_win(board, color)
+    scored = [(tactical_move_order_key(board, r, c, color), r, c) for r, c in moves]
+    scored.sort(key=lambda t: -t[0])
+    out = []
+    seen = set()
+    if win is not None and win in move_set:
+        out.append(win)
+        seen.add(win)
+    for _, r, c in scored:
+        if (r, c) in seen:
+            continue
+        out.append((r, c))
+        if len(out) >= limit:
+            break
+    return out
+
+
+def minimax(board, depth, alpha, beta, color, root_color, deadline, nodes):
+    """Alpha-beta minimax; leaf score is always root-relative (positive favors root_color)."""
+    nodes[0] += 1
+    if nodes[0] % NODE_CHECK_INTERVAL == 0 and time.perf_counter() > deadline:
+        raise SearchTimeout()
+    if time.perf_counter() > deadline:
+        raise SearchTimeout()
+
+    o = _opp(color)
+
+    if depth == 0:
+        if find_immediate_win(board, color) is not None:
+            return INF if color == root_color else -INF
+        return evaluate_board(board, root_color)
+
+    raw_moves = threat_space_candidates(board)
+    if not raw_moves:
+        return 0
+
+    moves = ordered_threat_moves(board, color, raw_moves, MAX_CANDIDATES)
+
+    if color == root_color:
+        best = -INF
+        for r, c in moves:
+            if board[r][c] != EMPTY:
+                continue
+            board[r][c] = color
+            try:
+                if check_five(board, r, c, color):
+                    sc = INF
+                else:
+                    sc = minimax(board, depth - 1, alpha, beta, o, root_color, deadline, nodes)
+            finally:
+                board[r][c] = EMPTY
+            if sc > best:
+                best = sc
+            if best > alpha:
+                alpha = best
+            if alpha >= beta:
+                break
+        return best
+
+    best = INF
+    for r, c in moves:
+        if board[r][c] != EMPTY:
+            continue
+        board[r][c] = color
+        try:
+            if check_five(board, r, c, color):
+                sc = -INF
+            else:
+                sc = minimax(board, depth - 1, alpha, beta, o, root_color, deadline, nodes)
+        finally:
+            board[r][c] = EMPTY
+        if sc < best:
+            best = sc
+        if best < beta:
+            beta = best
+        if alpha >= beta:
+            break
+    return best
+
+
+def minimax_root(board, depth, root_color, deadline, ordered_moves, nodes):
+    if time.perf_counter() > deadline:
+        raise SearchTimeout()
+    o = _opp(root_color)
+    best_move = ordered_moves[0]
+    best_val = -INF
+    alpha = -INF
+    beta = INF
+    for r, c in ordered_moves:
+        if board[r][c] != EMPTY:
+            continue
+        board[r][c] = root_color
+        try:
+            if check_five(board, r, c, root_color):
+                val = INF
+            else:
+                val = minimax(board, depth - 1, alpha, beta, o, root_color, deadline, nodes)
+        finally:
+            board[r][c] = EMPTY
+        if val > best_val:
+            best_val = val
+            best_move = (r, c)
+        if val > alpha:
+            alpha = val
+        if alpha >= beta:
+            break
+    return best_val, best_move
+
+
+def choose_move_search(board, my_color):
+    """
+    Threat-space candidate generation + pattern heuristic ordering +
+    iterative deepening minimax with alpha-beta under a wall-clock budget.
+    """
+    deadline = time.perf_counter() + MOVE_TIME_BUDGET_SEC
+    work = [list(row) for row in board]
+    opp = _opp(my_color)
+
+    w = find_immediate_win(work, my_color)
+    if w:
+        return w
+    b = find_immediate_win(work, opp)
+    if b:
+        return b
+
+    cands = threat_space_candidates(work)
+    if not cands:
+        return (BOARD_SIZE // 2, BOARD_SIZE // 2)
+
+    rankings = [[0 for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
+    rank_cells(work, rankings, my_color, opp)
+    opp_rank = [[0 for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
+    rank_cells(work, opp_rank, opp, my_color)
+
+    def combined_score(r, c):
+        return rankings[r][c] * 1.0 + opp_rank[r][c] * 0.98 + random.random() * 0.01
+
+    sorted_cands = sorted(cands, key=lambda m: -combined_score(m[0], m[1]))
+    ordered = sorted_cands[: max(MAX_CANDIDATES, 1)]
+
+    if time.perf_counter() >= deadline:
+        return ordered[0]
+
+    nodes = [0]
+    best = ordered[0]
+
+    depth = 1
+    while depth <= MAX_DEPTH_CAP:
+        if time.perf_counter() >= deadline:
+            break
+        try:
+            _, mv = minimax_root(work, depth, my_color, deadline, ordered, nodes)
+            if mv is not None:
+                best = mv
+        except SearchTimeout:
+            break
+        depth += 1
+
+    return best
+
 
 class GomokuBot:
     def __init__(self, token, username):
@@ -153,31 +517,10 @@ class GomokuBot:
     
     def choose_move(self, board, my_color, game_id):
         """
-        Choose the best move based on current board state using position ranking system.
-        
-        This strategy uses a comprehensive scoring system that evaluates each empty position
-        by looking at patterns in all 8 directions (horizontal, vertical, and diagonals).
-        
-        The ranking system prioritizes:
-        1. Immediate wins (4-in-a-row that can become 5)
-        2. Blocking opponent's immediate wins
-        3. Creating forcing moves (3-in-a-row with both ends open)
-        4. Blocking opponent's forcing moves
-        5. Building 2-in-a-row and 3-in-a-row patterns
-        6. General positional play
+        Threat-space candidates, pattern-based ordering (rank_cells), then iterative-deepening
+        minimax with alpha-beta and segment pattern evaluation within the time budget.
         """
-        # Create rankings matrix
-        rankings = [[0 for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
-        
-        # Rank all empty cells
-        opponent_color = 3 - my_color
-        rank_cells(board, rankings, my_color, opponent_color)
-        
-        # Add small random values to break ties
-        add_random_rankings(board, rankings)
-        
-        # Pick the highest ranked position
-        return pick_highest(board, rankings)
+        return choose_move_search(board, my_color)
     
     async def run(self):
         """Main bot loop"""
