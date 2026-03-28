@@ -30,6 +30,13 @@ EMPTY = 0
 BLACK = 1
 WHITE = 2
 
+# Minimax tuning knobs
+WIN_SCORE = 10_000_000
+MAX_CANDIDATES = 12
+NEIGHBOR_RADIUS = 2
+MIDGAME_DEPTH = 2
+ENDGAME_DEPTH = 3
+
 class GomokuBot:
     def __init__(self, token, username):
         self.token = token
@@ -160,31 +167,67 @@ class GomokuBot:
     
     def choose_move(self, board, my_color, game_id):
         """
-        Choose the best move based on current board state using position ranking system.
-        
-        This strategy uses a comprehensive scoring system that evaluates each empty position
-        by looking at patterns in all 8 directions (horizontal, vertical, and diagonals).
-        
-        The ranking system prioritizes:
-        1. Immediate wins (4-in-a-row that can become 5)
-        2. Blocking opponent's immediate wins
-        3. Creating forcing moves (3-in-a-row with both ends open)
-        4. Blocking opponent's forcing moves
-        5. Building 2-in-a-row and 3-in-a-row patterns
-        6. General positional play
+        Choose the best move with depth-limited minimax and alpha-beta pruning.
+
+        Search breadth is restricted to high-value candidate moves near existing stones,
+        ordered by the existing heuristic ranker for better pruning.
         """
-        # Create rankings matrix
-        rankings = [[0 for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
-        
-        # Rank all empty cells
         opponent_color = 3 - my_color
-        rank_cells(board, rankings, my_color, opponent_color)
-        
-        # Add small random values to break ties
-        add_random_rankings(board, rankings)
-        
-        # Pick the highest ranked position
-        return pick_highest(board, rankings)
+
+        if is_board_empty(board):
+            center = BOARD_SIZE // 2
+            return (center, center)
+
+        empty_count = count_empty_cells(board)
+        depth = ENDGAME_DEPTH if empty_count <= 45 else MIDGAME_DEPTH
+
+        candidate_moves = generate_candidate_moves(
+            board,
+            my_color,
+            opponent_color,
+            MAX_CANDIDATES,
+            NEIGHBOR_RADIUS,
+        )
+
+        if not candidate_moves:
+            return find_first_empty(board)
+
+        # Tactical fast-path: take immediate win if available.
+        for row, col in candidate_moves:
+            board[row][col] = my_color
+            winning_now = is_winning_move(board, row, col, my_color)
+            board[row][col] = EMPTY
+            if winning_now:
+                return (row, col)
+
+        best_score = -float("inf")
+        best_moves = []
+
+        for row, col in candidate_moves:
+            board[row][col] = my_color
+            score = minimax(
+                board,
+                depth - 1,
+                -float("inf"),
+                float("inf"),
+                False,
+                my_color,
+                opponent_color,
+                row,
+                col,
+            )
+            board[row][col] = EMPTY
+
+            if score > best_score:
+                best_score = score
+                best_moves = [(row, col)]
+            elif score == best_score:
+                best_moves.append((row, col))
+
+        if best_moves:
+            return random.choice(best_moves)
+
+        return find_first_empty(board)
     
     async def run(self):
         """Main bot loop"""
@@ -538,6 +581,226 @@ def pick_highest(board, rankings):
                 if board[row][col] == EMPTY:
                     return (row, col)
         return None
+
+
+def minimax(board, depth, alpha, beta, is_maximizing, my_color, opponent_color, last_row, last_col):
+    """Minimax search with alpha-beta pruning over a reduced candidate set."""
+    last_player = opponent_color if is_maximizing else my_color
+    if is_winning_move(board, last_row, last_col, last_player):
+        # Prefer faster wins and slower losses.
+        if last_player == my_color:
+            return WIN_SCORE + depth
+        return -WIN_SCORE - depth
+
+    if depth == 0 or is_board_full(board):
+        return evaluate_board(board, my_color, opponent_color)
+
+    if is_maximizing:
+        value = -float("inf")
+        moves = generate_candidate_moves(
+            board,
+            my_color,
+            opponent_color,
+            MAX_CANDIDATES,
+            NEIGHBOR_RADIUS,
+        )
+        if not moves:
+            return evaluate_board(board, my_color, opponent_color)
+
+        for row, col in moves:
+            board[row][col] = my_color
+            score = minimax(
+                board,
+                depth - 1,
+                alpha,
+                beta,
+                False,
+                my_color,
+                opponent_color,
+                row,
+                col,
+            )
+            board[row][col] = EMPTY
+            value = max(value, score)
+            alpha = max(alpha, value)
+            if beta <= alpha:
+                break
+        return value
+
+    value = float("inf")
+    moves = generate_candidate_moves(
+        board,
+        opponent_color,
+        my_color,
+        MAX_CANDIDATES,
+        NEIGHBOR_RADIUS,
+    )
+    if not moves:
+        return evaluate_board(board, my_color, opponent_color)
+
+    for row, col in moves:
+        board[row][col] = opponent_color
+        score = minimax(
+            board,
+            depth - 1,
+            alpha,
+            beta,
+            True,
+            my_color,
+            opponent_color,
+            row,
+            col,
+        )
+        board[row][col] = EMPTY
+        value = min(value, score)
+        beta = min(beta, value)
+        if beta <= alpha:
+            break
+    return value
+
+
+def evaluate_board(board, my_color, opponent_color):
+    """Static board evaluation used at minimax depth cutoff."""
+    my_best, my_top_sum = best_and_top_sum_scores(board, my_color, opponent_color, top_n=3)
+    opp_best, opp_top_sum = best_and_top_sum_scores(board, opponent_color, my_color, top_n=3)
+
+    # Emphasize strongest tactical moves while still considering broader pressure.
+    return (my_best * 3 + my_top_sum) - (opp_best * 3 + opp_top_sum)
+
+
+def best_and_top_sum_scores(board, my_color, opponent_color, top_n=3):
+    rankings = [[0 for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
+    rank_cells(board, rankings, my_color, opponent_color)
+
+    scores = []
+    for row in range(BOARD_SIZE):
+        for col in range(BOARD_SIZE):
+            if board[row][col] == EMPTY:
+                scores.append(rankings[row][col])
+
+    if not scores:
+        return (0, 0)
+
+    scores.sort(reverse=True)
+    return (scores[0], sum(scores[:top_n]))
+
+
+def generate_candidate_moves(board, active_color, passive_color, max_candidates, neighbor_radius):
+    """
+    Generate high-value candidate moves for the current player.
+
+    Restricting search to nearby/high-score cells keeps minimax tractable on 19x19.
+    """
+    rankings = [[0 for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
+    rank_cells(board, rankings, active_color, passive_color)
+
+    if is_board_empty(board):
+        center = BOARD_SIZE // 2
+        return [(center, center)]
+
+    scored_moves = []
+    center = BOARD_SIZE // 2
+
+    for row in range(BOARD_SIZE):
+        for col in range(BOARD_SIZE):
+            if board[row][col] != EMPTY:
+                continue
+            if not has_neighbor(board, row, col, neighbor_radius):
+                continue
+
+            # Mild center bias to stabilize opening and tie-break ordering.
+            dist = abs(row - center) + abs(col - center)
+            score = rankings[row][col] - (dist * 0.01)
+            scored_moves.append((score, row, col))
+
+    if not scored_moves:
+        for row in range(BOARD_SIZE):
+            for col in range(BOARD_SIZE):
+                if board[row][col] == EMPTY:
+                    dist = abs(row - center) + abs(col - center)
+                    score = rankings[row][col] - (dist * 0.01)
+                    scored_moves.append((score, row, col))
+
+    scored_moves.sort(reverse=True)
+    top_moves = scored_moves[:max_candidates]
+    return [(row, col) for _, row, col in top_moves]
+
+
+def has_neighbor(board, row, col, radius):
+    """True if any stone exists within the local neighborhood around a cell."""
+    for dr in range(-radius, radius + 1):
+        for dc in range(-radius, radius + 1):
+            if dr == 0 and dc == 0:
+                continue
+
+            nr = row + dr
+            nc = col + dc
+            if 0 <= nr < BOARD_SIZE and 0 <= nc < BOARD_SIZE and board[nr][nc] != EMPTY:
+                return True
+    return False
+
+
+def is_board_empty(board):
+    for row in range(BOARD_SIZE):
+        for col in range(BOARD_SIZE):
+            if board[row][col] != EMPTY:
+                return False
+    return True
+
+
+def is_board_full(board):
+    for row in range(BOARD_SIZE):
+        for col in range(BOARD_SIZE):
+            if board[row][col] == EMPTY:
+                return False
+    return True
+
+
+def count_empty_cells(board):
+    empty_count = 0
+    for row in range(BOARD_SIZE):
+        for col in range(BOARD_SIZE):
+            if board[row][col] == EMPTY:
+                empty_count += 1
+    return empty_count
+
+
+def find_first_empty(board):
+    for row in range(BOARD_SIZE):
+        for col in range(BOARD_SIZE):
+            if board[row][col] == EMPTY:
+                return (row, col)
+    return None
+
+
+def is_winning_move(board, row, col, color):
+    """Check whether the stone at (row, col) completes any 5+ line."""
+    if row is None or col is None:
+        return False
+    if board[row][col] != color:
+        return False
+
+    directions = [(0, 1), (1, 0), (1, 1), (1, -1)]
+    for dr, dc in directions:
+        count = 1
+        count += count_in_direction(board, row, col, color, dr, dc)
+        count += count_in_direction(board, row, col, color, -dr, -dc)
+        if count >= 5:
+            return True
+    return False
+
+
+def count_in_direction(board, row, col, color, dr, dc):
+    total = 0
+    r = row + dr
+    c = col + dc
+
+    while 0 <= r < BOARD_SIZE and 0 <= c < BOARD_SIZE and board[r][c] == color:
+        total += 1
+        r += dr
+        c += dc
+
+    return total
 
 
 async def main():
