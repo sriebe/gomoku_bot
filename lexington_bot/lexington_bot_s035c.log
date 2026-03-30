@@ -1,0 +1,1200 @@
+[DEBUG] launcher called with: username=lexington_bot_s035c, run_only=True
+[DEBUG] loaded config: username=lexington_bot_s035c
+[DEBUG] Credentials match, running bot
+
+=== Running Bot ===
+Username: lexington_bot_s035c
+Server: ws://localhost:8000/ws
+
+Starting bot... (Press Ctrl+C to stop)
+
+[BOT] Connecting to ws://localhost:8000/ws...
+[BOT-STDERR] Connecting to ws://localhost:8000/ws...
+[BOT] Connected as lexington_bot_s035c
+[BOT-STDERR] Connected as lexington_bot_s035c
+[BOT] Authenticated successfully
+[BOT] Waiting for tournament runner to initiate games...
+[BOT] Created game 2a70a012, playing as Black
+[BOT] Waiting for opponent...
+[BOT] Game started! Playing as Black against normal_bot_s035c
+[BOT] Using ranked move (9, 8) in 0.008s
+[BOT] Making move: (9,8)
+[BOT] Using ranked move (10, 8) in 0.007s
+[BOT] Making move: (10,8)
+[BOT] Using ranked move (8, 8) in 0.007s
+[BOT] Making move: (8,8)
+[BOT] Using ranked move (7, 8) in 0.006s
+[BOT] Making move: (7,8)
+[BOT] Using ranked move (8, 9) in 0.006s
+[BOT] Making move: (8,9)
+[BOT] Using ranked move (8, 11) in 0.006s
+[BOT] Making move: (8,11)
+[BOT] Using ranked move (9, 11) in 0.006s
+[BOT] Making move: (9,11)
+[BOT] Using ranked move (11, 9) in 0.006s
+[BOT] Making move: (11,9)
+[BOT] Using ranked move (7, 10) in 0.006s
+[BOT] Making move: (7,10)
+[BOT] Using ranked move (7, 9) in 0.006s
+[BOT] Making move: (7,9)
+[BOT] Using ranked move (6, 9) in 0.006s
+[BOT] Making move: (6,9)
+[BOT] Using ranked move (8, 7) in 0.006s
+[BOT] Making move: (8,7)
+[BOT] Using ranked move (4, 9) in 0.006s
+[BOT] Making move: (4,9)
+[BOT] Using ranked move (5, 8) in 0.006s
+[BOT] Making move: (5,8)
+[BOT] Using ranked move (7, 6) in 0.006s
+[BOT] Making move: (7,6)
+[BOT] Using ranked move (6, 7) in 0.006s
+[BOT] Making move: (6,7)
+[BOT] Using ranked move (3, 10) in 0.006s
+[BOT] Making move: (3,10)
+[BOT] Victory! I won the game!
+[GAMETREE] Recorded game result: WIN_NORMAL, I won
+[GAMETREE] Database stats: {'board_states': 1768, 'moves': 17, 'games': 43}
+[BOT] Game complete, waiting for tournament runner...
+[BOT] Created game 1788b46c, playing as Black
+[BOT] Waiting for opponent...
+[BOT] Game started! Playing as Black against normal_bot_s035c
+[BOT] Using ranked move (10, 10) in 0.009s
+[BOT] Making move: (10,10)
+[BOT] Using ranked move (9, 9) in 0.007s
+[BOT] Making move: (9,9)
+[BOT] Using ranked move (8, 8) in 0.007s
+[BOT] Making move: (8,8)
+[BOT] Using ranked move (8, 9) in 0.006s
+[BOT] Making move: (8,9)
+[BOT] Using ranked move (6, 9) in 0.006s
+[BOT] Making move: (6,9)
+[BOT] Using ranked move (5, 9) in 0.006s
+[BOT] Making move: (5,9)
+[BOT] Victory! I won the game!
+[GAMETREE] Recorded game result: WIN_NORMAL, I won
+[GAMETREE] Database stats: {'board_states': 1774, 'moves': 23, 'games': 44}
+[BOT] Game complete, waiting for tournament runner...
+[BOT] Created game ae7e9de2, playing as White
+[BOT] Waiting for opponent...
+[BOT] Game started! Playing as White against normal_bot_s035c
+[BOT] Using ranked move (7, 8) in 0.008s
+[BOT] Making move: (7,8)
+[BOT] Using ranked move (11, 12) in 0.007s
+[BOT] Making move: (11,12)
+[BOT] Using ranked move (10, 10) in 0.007s
+[BOT] Making move: (10,10)
+[BOT] Using ranked move (12, 9) in 0.007s
+[BOT] Making move: (12,9)
+[BOT] Using ranked move (9, 9) in 0.007s
+[BOT] Making move: (9,9)
+[BOT] Using ranked move (8, 11) in 0.007s
+[BOT] Making move: (8,11)
+[BOT] Using ranked move (12, 11) in 0.008s
+[BOT] Making move: (12,11)
+[BOT] Using ranked move (9, 13) in 0.008s
+[BOT] Making move: (9,13)
+[BOT] Using ranked move (11, 9) in 0.007s
+[BOT] Making move: (11,9)
+[BOT] Using ranked move (14, 8) in 0.007s
+[BOT] Making move: (14,8)
+[BOT] Using ranked move (7, 14) in 0.007s
+[BOT] Making move: (7,14)
+[BOT] Using ranked move (6, 11) in 0.007s
+[BOT] Making move: (6,11)
+[BOT] Using ranked move (13, 8) in 0.007s
+[BOT] Making move: (13,8)
+[BOT] Using ranked move (15, 10) in 0.007s
+[BOT] Making move: (15,10)
+[BOT] Using ranked move (12, 8) in 0.007s
+[BOT] Making move: (12,8)
+[BOT] Using ranked move (13, 7) in 0.007s
+[BOT] Making move: (13,7)
+[BOT] Using ranked move (12, 7) in 0.006s
+[BOT] Making move: (12,7)
+[BOT] Using ranked move (12, 6) in 0.006s
+[BOT] Making move: (12,6)
+[BOT] Using ranked move (15, 9) in 0.006s
+[BOT] Making move: (15,9)
+[BOT] Using ranked move (16, 10) in 0.006s
+[BOT] Making move: (16,10)
+[BOT] Victory! I won the game!
+[GAMETREE] Recorded game result: WIN_NORMAL, I won
+[GAMETREE] Database stats: {'board_states': 1794, 'moves': 43, 'games': 45}
+[BOT] Game complete, waiting for tournament runner...
+[BOT] Created game 3719f529, playing as Black
+[BOT] Waiting for opponent...
+[BOT] Game started! Playing as Black against normal_bot_s035c
+[BOT] Using ranked move (7, 7) in 0.008s
+[BOT] Making move: (7,7)
+[BOT] Using ranked move (6, 7) in 0.007s
+[BOT] Making move: (6,7)
+[BOT] Using ranked move (8, 7) in 0.007s
+[BOT] Making move: (8,7)
+[BOT] Using ranked move (9, 6) in 0.007s
+[BOT] Making move: (9,6)
+[BOT] Using ranked move (4, 7) in 0.007s
+[BOT] Making move: (4,7)
+[BOT] Using ranked move (10, 5) in 0.007s
+[BOT] Making move: (10,5)
+[BOT] Using ranked move (9, 8) in 0.007s
+[BOT] Making move: (9,8)
+[BOT] Using ranked move (9, 12) in 0.007s
+[BOT] Making move: (9,12)
+[BOT] Using ranked move (9, 10) in 0.007s
+[BOT] Making move: (9,10)
+[BOT] Using ranked move (8, 8) in 0.007s
+[BOT] Making move: (8,8)
+[BOT] Using ranked move (9, 9) in 0.007s
+[BOT] Making move: (9,9)
+[BOT] Using ranked move (10, 11) in 0.007s
+[BOT] Making move: (10,11)
+[BOT] Using ranked move (11, 9) in 0.006s
+[BOT] Making move: (11,9)
+[BOT] Using ranked move (8, 10) in 0.006s
+[BOT] Making move: (8,10)
+[BOT] Using ranked move (6, 14) in 0.006s
+[BOT] Making move: (6,14)
+[BOT] Using ranked move (9, 13) in 0.006s
+[BOT] Making move: (9,13)
+[BOT] Using ranked move (5, 11) in 0.006s
+[BOT] Making move: (5,11)
+[BOT] Using ranked move (7, 14) in 0.006s
+[BOT] Making move: (7,14)
+[BOT] Using ranked move (5, 10) in 0.006s
+[BOT] Making move: (5,10)
+[BOT] Defeat. normal_bot_s035c won the game.
+[GAMETREE] Recorded game result: WIN_NORMAL, I lost
+[GAMETREE] Database stats: {'board_states': 1813, 'moves': 62, 'games': 46}
+[BOT] Game complete, waiting for tournament runner...
+[BOT] Created game 66f20e7f, playing as White
+[BOT] Waiting for opponent...
+[BOT] Game started! Playing as White against normal_bot_s035c
+[BOT] Using ranked move (8, 7) in 0.008s
+[BOT] Making move: (8,7)
+[BOT] Using ranked move (9, 7) in 0.007s
+[BOT] Making move: (9,7)
+[BOT] Using ranked move (8, 9) in 0.007s
+[BOT] Making move: (8,9)
+[BOT] Using ranked move (6, 7) in 0.007s
+[BOT] Making move: (6,7)
+[BOT] Using ranked move (5, 6) in 0.007s
+[BOT] Making move: (5,6)
+[BOT] Using ranked move (9, 9) in 0.007s
+[BOT] Making move: (9,9)
+[BOT] Using ranked move (12, 9) in 0.008s
+[BOT] Making move: (12,9)
+[BOT] Using ranked move (12, 7) in 0.106s
+[BOT] Making move: (12,7)
+[BOT] Using ranked move (12, 8) in 0.026s
+[BOT] Making move: (12,8)
+[BOT] Using ranked move (10, 10) in 0.007s
+[BOT] Making move: (10,10)
+[BOT] Defeat. normal_bot_s035c won the game.
+[GAMETREE] Recorded game result: WIN_NORMAL, I lost
+[GAMETREE] Database stats: {'board_states': 1823, 'moves': 72, 'games': 47}
+[BOT] Game complete, waiting for tournament runner...
+[BOT] Created game 0c67603c, playing as Black
+[BOT] Waiting for opponent...
+[BOT] Game started! Playing as Black against normal_bot_s035c
+[BOT] Using ranked move (8, 10) in 0.008s
+[BOT] Making move: (8,10)
+[BOT] Using ranked move (9, 8) in 0.007s
+[BOT] Making move: (9,8)
+[BOT] Using ranked move (8, 8) in 0.007s
+[BOT] Making move: (8,8)
+[BOT] Using ranked move (6, 8) in 0.007s
+[BOT] Making move: (6,8)
+[BOT] Using ranked move (7, 9) in 0.007s
+[BOT] Making move: (7,9)
+[BOT] Using ranked move (6, 9) in 0.007s
+[BOT] Making move: (6,9)
+[BOT] Using ranked move (5, 9) in 0.007s
+[BOT] Making move: (5,9)
+[BOT] Using ranked move (4, 10) in 0.007s
+[BOT] Making move: (4,10)
+[BOT] Using ranked move (6, 7) in 0.006s
+[BOT] Making move: (6,7)
+[BOT] Using ranked move (13, 5) in 0.006s
+[BOT] Making move: (13,5)
+[BOT] Using ranked move (6, 6) in 0.007s
+[BOT] Making move: (6,6)
+[BOT] Using ranked move (9, 11) in 0.007s
+[BOT] Making move: (9,11)
+[BOT] Using ranked move (6, 11) in 0.006s
+[BOT] Making move: (6,11)
+[BOT] Using ranked move (3, 11) in 0.006s
+[BOT] Making move: (3,11)
+[BOT] Using ranked move (5, 11) in 0.007s
+[BOT] Making move: (5,11)
+[BOT] Using ranked move (6, 12) in 0.006s
+[BOT] Making move: (6,12)
+[BOT] Using ranked move (7, 13) in 0.006s
+[BOT] Making move: (7,13)
+[BOT] Using ranked move (8, 12) in 0.006s
+[BOT] Making move: (8,12)
+[BOT] Using ranked move (10, 9) in 0.006s
+[BOT] Making move: (10,9)
+[BOT] Using ranked move (11, 11) in 0.006s
+[BOT] Making move: (11,11)
+[BOT] Using ranked move (6, 16) in 0.006s
+[BOT] Making move: (6,16)
+[BOT] Using ranked move (6, 14) in 0.006s
+[BOT] Making move: (6,14)
+[BOT] Using ranked move (6, 15) in 0.006s
+[BOT] Making move: (6,15)
+[BOT] Using ranked move (5, 12) in 0.006s
+[BOT] Making move: (5,12)
+[BOT] Using ranked move (9, 7) in 0.006s
+[BOT] Making move: (9,7)
+[BOT] Using ranked move (4, 15) in 0.006s
+[BOT] Making move: (4,15)
+[BOT] Using ranked move (5, 17) in 0.006s
+[BOT] Making move: (5,17)
+[BOT] Using ranked move (11, 6) in 0.006s
+[BOT] Making move: (11,6)
+[BOT] Using ranked move (12, 8) in 0.006s
+[BOT] Making move: (12,8)
+[BOT] Using ranked move (8, 5) in 0.006s
+[BOT] Making move: (8,5)
+[BOT] Using ranked move (7, 3) in 0.006s
+[BOT] Making move: (7,3)
+[BOT] Using ranked move (5, 6) in 0.006s
+[BOT] Making move: (5,6)
+[BOT] Using ranked move (4, 5) in 0.006s
+[BOT] Making move: (4,5)
+[BOT] Using ranked move (5, 4) in 0.006s
+[BOT] Making move: (5,4)
+[BOT] Using ranked move (3, 5) in 0.006s
+[BOT] Making move: (3,5)
+[BOT] Using ranked move (4, 3) in 0.006s
+[BOT] Making move: (4,3)
+[BOT] Using ranked move (6, 3) in 0.005s
+[BOT] Making move: (6,3)
+[BOT] Using ranked move (7, 4) in 0.005s
+[BOT] Making move: (7,4)
+[BOT] Using ranked move (7, 2) in 0.005s
+[BOT] Making move: (7,2)
+[BOT] Using ranked move (7, 1) in 0.006s
+[BOT] Making move: (7,1)
+[BOT] Using ranked move (5, 2) in 0.005s
+[BOT] Making move: (5,2)
+[BOT] Using ranked move (6, 2) in 0.006s
+[BOT] Making move: (6,2)
+[BOT] Using ranked move (6, 4) in 0.005s
+[BOT] Making move: (6,4)
+[BOT] Using ranked move (8, 3) in 0.005s
+[BOT] Making move: (8,3)
+[BOT] Using ranked move (9, 3) in 0.005s
+[BOT] Making move: (9,3)
+[BOT] Using ranked move (10, 5) in 0.005s
+[BOT] Making move: (10,5)
+[BOT] Using ranked move (9, 2) in 0.005s
+[BOT] Making move: (9,2)
+[BOT] Using ranked move (4, 7) in 0.005s
+[BOT] Making move: (4,7)
+[BOT] Using ranked move (2, 3) in 0.005s
+[BOT] Making move: (2,3)
+[BOT] Using ranked move (0, 4) in 0.005s
+[BOT] Making move: (0,4)
+[BOT] Using ranked move (5, 1) in 0.005s
+[BOT] Making move: (5,1)
+[BOT] Using ranked move (1, 1) in 0.005s
+[BOT] Making move: (1,1)
+[BOT] Using ranked move (0, 6) in 0.005s
+[BOT] Making move: (0,6)
+[BOT] Using ranked move (10, 1) in 0.005s
+[BOT] Making move: (10,1)
+[BOT] Using ranked move (1, 6) in 0.005s
+[BOT] Making move: (1,6)
+[BOT] Using ranked move (1, 2) in 0.005s
+[BOT] Making move: (1,2)
+[BOT] Using ranked move (3, 1) in 0.005s
+[BOT] Making move: (3,1)
+[BOT] Using ranked move (3, 10) in 0.005s
+[BOT] Making move: (3,10)
+[BOT] Using ranked move (2, 13) in 0.004s
+[BOT] Making move: (2,13)
+[BOT] Using ranked move (1, 11) in 0.005s
+[BOT] Making move: (1,11)
+[BOT] Using ranked move (12, 4) in 0.005s
+[BOT] Making move: (12,4)
+[BOT] Using ranked move (10, 4) in 0.005s
+[BOT] Making move: (10,4)
+[BOT] Using ranked move (11, 4) in 0.004s
+[BOT] Making move: (11,4)
+[BOT] Using ranked move (13, 0) in 0.004s
+[BOT] Making move: (13,0)
+[BOT] Using ranked move (12, 3) in 0.005s
+[BOT] Making move: (12,3)
+[BOT] Using ranked move (14, 3) in 0.005s
+[BOT] Making move: (14,3)
+[BOT] Using ranked move (14, 2) in 0.004s
+[BOT] Making move: (14,2)
+[BOT] Using ranked move (14, 4) in 0.004s
+[BOT] Making move: (14,4)
+[BOT] Using ranked move (14, 1) in 0.004s
+[BOT] Making move: (14,1)
+[BOT] Using ranked move (12, 7) in 0.005s
+[BOT] Making move: (12,7)
+[BOT] Using ranked move (13, 6) in 0.004s
+[BOT] Making move: (13,6)
+[BOT] Using ranked move (12, 9) in 0.004s
+[BOT] Making move: (12,9)
+[BOT] Using ranked move (4, 13) in 0.004s
+[BOT] Making move: (4,13)
+[BOT] Using ranked move (4, 14) in 0.004s
+[BOT] Making move: (4,14)
+[BOT] Using ranked move (5, 13) in 0.004s
+[BOT] Making move: (5,13)
+[BOT] Using ranked move (3, 15) in 0.004s
+[BOT] Making move: (3,15)
+[BOT] Using ranked move (3, 13) in 0.004s
+[BOT] Making move: (3,13)
+[BOT] Using ranked move (1, 16) in 0.004s
+[BOT] Making move: (1,16)
+[BOT] Using ranked move (2, 8) in 0.004s
+[BOT] Making move: (2,8)
+[BOT] Using ranked move (0, 9) in 0.004s
+[BOT] Making move: (0,9)
+[BOT] Using ranked move (11, 12) in 0.004s
+[BOT] Making move: (11,12)
+[BOT] Using ranked move (12, 13) in 0.004s
+[BOT] Making move: (12,13)
+[BOT] Using ranked move (10, 14) in 0.004s
+[BOT] Making move: (10,14)
+[BOT] Using ranked move (9, 12) in 0.004s
+[BOT] Making move: (9,12)
+[BOT] Using ranked move (12, 14) in 0.004s
+[BOT] Making move: (12,14)
+[BOT] Using ranked move (13, 16) in 0.004s
+[BOT] Making move: (13,16)
+[BOT] Using ranked move (11, 16) in 0.004s
+[BOT] Making move: (11,16)
+[BOT] Using ranked move (13, 15) in 0.004s
+[BOT] Making move: (13,15)
+[BOT] Using ranked move (10, 15) in 0.004s
+[BOT] Making move: (10,15)
+[BOT] Using ranked move (7, 16) in 0.004s
+[BOT] Making move: (7,16)
+[BOT] Using ranked move (9, 15) in 0.003s
+[BOT] Making move: (9,15)
+[BOT] Using ranked move (15, 4) in 0.003s
+[BOT] Making move: (15,4)
+[BOT] Using ranked move (17, 8) in 0.004s
+[BOT] Making move: (17,8)
+[BOT] Using ranked move (16, 6) in 0.003s
+[BOT] Making move: (16,6)
+[BOT] Using ranked move (14, 7) in 0.003s
+[BOT] Making move: (14,7)
+[BOT] Using ranked move (15, 7) in 0.003s
+[BOT] Making move: (15,7)
+[BOT] Using ranked move (13, 10) in 0.003s
+[BOT] Making move: (13,10)
+[BOT] Using ranked move (17, 6) in 0.003s
+[BOT] Making move: (17,6)
+[BOT] Using ranked move (15, 5) in 0.003s
+[BOT] Making move: (15,5)
+[BOT] Using ranked move (17, 7) in 0.003s
+[BOT] Making move: (17,7)
+[BOT] Using ranked move (17, 9) in 0.003s
+[BOT] Making move: (17,9)
+[BOT] Using ranked move (18, 7) in 0.003s
+[BOT] Making move: (18,7)
+[BOT] Using ranked move (16, 11) in 0.003s
+[BOT] Making move: (16,11)
+[BOT] Using ranked move (14, 10) in 0.003s
+[BOT] Making move: (14,10)
+[BOT] Using ranked move (14, 8) in 0.003s
+[BOT] Making move: (14,8)
+[BOT] Using ranked move (15, 11) in 0.003s
+[BOT] Making move: (15,11)
+[BOT] Using ranked move (16, 12) in 0.003s
+[BOT] Making move: (16,12)
+[BOT] Using ranked move (17, 13) in 0.003s
+[BOT] Making move: (17,13)
+[BOT] Using ranked move (15, 13) in 0.003s
+[BOT] Making move: (15,13)
+[BOT] Using ranked move (14, 15) in 0.003s
+[BOT] Making move: (14,15)
+[BOT] Using ranked move (16, 14) in 0.003s
+[BOT] Making move: (16,14)
+[BOT] Using ranked move (16, 16) in 0.002s
+[BOT] Making move: (16,16)
+[BOT] Using ranked move (13, 12) in 0.003s
+[BOT] Making move: (13,12)
+[BOT] Using ranked move (15, 17) in 0.003s
+[BOT] Making move: (15,17)
+[BOT] Using ranked move (1, 15) in 0.002s
+[BOT] Making move: (1,15)
+[BOT] Using ranked move (2, 15) in 0.003s
+[BOT] Making move: (2,15)
+[BOT] Using ranked move (0, 12) in 0.002s
+[BOT] Making move: (0,12)
+[BOT] Using ranked move (17, 3) in 0.003s
+[BOT] Making move: (17,3)
+[BOT] Using ranked move (8, 15) in 0.002s
+[BOT] Making move: (8,15)
+[BOT] Using ranked move (17, 14) in 0.002s
+[BOT] Making move: (17,14)
+[BOT] Using ranked move (18, 17) in 0.002s
+[BOT] Making move: (18,17)
+[BOT] Using ranked move (5, 5) in 0.002s
+[BOT] Making move: (5,5)
+[BOT] Using ranked move (16, 10) in 0.002s
+[BOT] Making move: (16,10)
+[BOT] Using ranked move (8, 0) in 0.002s
+[BOT] Making move: (8,0)
+[BOT] Using ranked move (4, 0) in 0.002s
+[BOT] Making move: (4,0)
+[BOT] Using ranked move (11, 9) in 0.002s
+[BOT] Making move: (11,9)
+[BOT] Using ranked move (16, 2) in 0.002s
+[BOT] Making move: (16,2)
+[BOT] Using ranked move (18, 4) in 0.002s
+[BOT] Making move: (18,4)
+[BOT] Using ranked move (18, 13) in 0.002s
+[BOT] Making move: (18,13)
+[BOT] Using ranked move (18, 11) in 0.002s
+[BOT] Making move: (18,11)
+[BOT] Using ranked move (9, 17) in 0.002s
+[BOT] Making move: (9,17)
+[BOT] Using ranked move (12, 17) in 0.002s
+[BOT] Making move: (12,17)
+[BOT] Using ranked move (14, 18) in 0.002s
+[BOT] Making move: (14,18)
+[BOT] Using ranked move (0, 17) in 0.002s
+[BOT] Making move: (0,17)
+[BOT] Using ranked move (11, 18) in 0.002s
+[BOT] Making move: (11,18)
+[BOT] Using ranked move (7, 18) in 0.002s
+[BOT] Making move: (7,18)
+[BOT] Using ranked move (4, 18) in 0.002s
+[BOT] Making move: (4,18)
+[BOT] Using ranked move (18, 0) in 0.002s
+[BOT] Making move: (18,0)
+[BOT] Using ranked move (1, 18) in 0.002s
+[BOT] Making move: (1,18)
+[BOT] Using ranked move (17, 12) in 0.002s
+[BOT] Making move: (17,12)
+[BOT] Using ranked move (14, 17) in 0.002s
+[BOT] Making move: (14,17)
+[BOT] Using ranked move (16, 4) in 0.002s
+[BOT] Making move: (16,4)
+[BOT] Using ranked move (4, 17) in 0.001s
+[BOT] Making move: (4,17)
+[BOT] Using ranked move (0, 18) in 0.002s
+[BOT] Making move: (0,18)
+[BOT] Using ranked move (0, 8) in 0.001s
+[BOT] Making move: (0,8)
+[BOT] Using ranked move (3, 18) in 0.001s
+[BOT] Making move: (3,18)
+[BOT] Using ranked move (18, 6) in 0.001s
+[BOT] Making move: (18,6)
+[BOT] Using ranked move (0, 13) in 0.001s
+[BOT] Making move: (0,13)
+[BOT] Using ranked move (15, 2) in 0.002s
+[BOT] Making move: (15,2)
+[BOT] Using ranked move (17, 15) in 0.001s
+[BOT] Making move: (17,15)
+[BOT] Using ranked move (6, 0) in 0.001s
+[BOT] Making move: (6,0)
+[BOT] Using ranked move (10, 7) in 0.001s
+[BOT] Making move: (10,7)
+[BOT] Using ranked move (3, 17) in 0.001s
+[BOT] Making move: (3,17)
+[BOT] Using ranked move (18, 9) in 0.001s
+[BOT] Making move: (18,9)
+[BOT] Using ranked move (15, 12) in 0.001s
+[BOT] Making move: (15,12)
+[BOT] Using ranked move (17, 18) in 0.001s
+[BOT] Making move: (17,18)
+[BOT] Using ranked move (1, 8) in 0.001s
+[BOT] Making move: (1,8)
+[BOT] Using ranked move (13, 18) in 0.001s
+[BOT] Making move: (13,18)
+[BOT] Using ranked move (18, 3) in 0.001s
+[BOT] Making move: (18,3)
+[BOT] Using ranked move (3, 7) in 0.001s
+[BOT] Making move: (3,7)
+[BOT] Using ranked move (2, 0) in 0.001s
+[BOT] Making move: (2,0)
+[BOT] Using ranked move (8, 17) in 0.001s
+[BOT] Making move: (8,17)
+[BOT] Using ranked move (6, 18) in 0.001s
+[BOT] Making move: (6,18)
+[BOT] Using ranked move (13, 1) in 0.001s
+[BOT] Making move: (13,1)
+[BOT] Using ranked move (12, 0) in 0.001s
+[BOT] Making move: (12,0)
+[BOT] Using ranked move (0, 11) in 0.001s
+[BOT] Making move: (0,11)
+[BOT] Using ranked move (13, 7) in 0.001s
+[BOT] Making move: (13,7)
+[BOT] Using ranked move (11, 10) in 0.001s
+[BOT] Making move: (11,10)
+[BOT] Using ranked move (2, 17) in 0.001s
+[BOT] Making move: (2,17)
+[BOT] Using ranked move (12, 10) in 0.001s
+[BOT] Making move: (12,10)
+[BOT] Using ranked move (2, 7) in 0.001s
+[BOT] Making move: (2,7)
+[BOT] Using ranked move (18, 18) in 0.001s
+[BOT] Making move: (18,18)
+[BOT] Using ranked move (9, 18) in 0.001s
+[BOT] Making move: (9,18)
+[BOT] Using ranked move (1, 12) in 0.001s
+[BOT] Making move: (1,12)
+[BOT] Using ranked move (9, 16) in 0.001s
+[BOT] Making move: (9,16)
+[BOT] Using ranked move (15, 0) in 0.000s
+[BOT] Making move: (15,0)
+[BOT] Using ranked move (18, 1) in 0.000s
+[BOT] Making move: (18,1)
+[BOT] Using ranked move (9, 1) in 0.001s
+[BOT] Making move: (9,1)
+[BOT] Using ranked move (2, 1) in 0.000s
+[BOT] Making move: (2,1)
+[BOT] Game ended in a draw.
+[GAMETREE] Recorded game result: DRAW, I drew
+[GAMETREE] Database stats: {'board_states': 2002, 'moves': 251, 'games': 48}
+[BOT] Game complete, waiting for tournament runner...
+[BOT] Created game dea870c0, playing as Black
+[BOT] Waiting for opponent...
+[BOT] Game started! Playing as Black against normal_bot_s035c
+[BOT] Using ranked move (7, 9) in 0.007s
+[BOT] Making move: (7,9)
+[BOT] Using ranked move (9, 7) in 0.007s
+[BOT] Making move: (9,7)
+[BOT] Using ranked move (9, 8) in 0.007s
+[BOT] Making move: (9,8)
+[BOT] Using ranked move (6, 7) in 0.007s
+[BOT] Making move: (6,7)
+[BOT] Using ranked move (7, 10) in 0.007s
+[BOT] Making move: (7,10)
+[BOT] Using ranked move (11, 12) in 0.007s
+[BOT] Making move: (11,12)
+[BOT] Using ranked move (8, 7) in 0.007s
+[BOT] Making move: (8,7)
+[BOT] Using ranked move (10, 6) in 0.007s
+[BOT] Making move: (10,6)
+[BOT] Using ranked move (7, 5) in 0.007s
+[BOT] Making move: (7,5)
+[BOT] Using ranked move (9, 5) in 0.007s
+[BOT] Making move: (9,5)
+[BOT] Using ranked move (5, 6) in 0.006s
+[BOT] Making move: (5,6)
+[BOT] Using ranked move (11, 6) in 0.006s
+[BOT] Making move: (11,6)
+[BOT] Using ranked move (10, 7) in 0.006s
+[BOT] Making move: (10,7)
+[BOT] Using ranked move (12, 5) in 0.006s
+[BOT] Making move: (12,5)
+[BOT] Using ranked move (10, 10) in 0.007s
+[BOT] Making move: (10,10)
+[BOT] Using ranked move (8, 11) in 0.007s
+[BOT] Making move: (8,11)
+[BOT] Using ranked move (13, 11) in 0.006s
+[BOT] Making move: (13,11)
+[BOT] Using ranked move (11, 10) in 0.006s
+[BOT] Making move: (11,10)
+[BOT] Using ranked move (10, 4) in 0.006s
+[BOT] Making move: (10,4)
+[BOT] Using ranked move (14, 4) in 0.006s
+[BOT] Making move: (14,4)
+[BOT] Using ranked move (13, 6) in 0.006s
+[BOT] Making move: (13,6)
+[BOT] Using ranked move (14, 7) in 0.007s
+[BOT] Making move: (14,7)
+[BOT] Using ranked move (14, 5) in 0.008s
+[BOT] Making move: (14,5)
+[BOT] Using ranked move (12, 7) in 0.009s
+[BOT] Making move: (12,7)
+[BOT] Using ranked move (9, 4) in 0.006s
+[BOT] Making move: (9,4)
+[BOT] Using ranked move (8, 4) in 0.006s
+[BOT] Making move: (8,4)
+[BOT] Using ranked move (12, 4) in 0.006s
+[BOT] Making move: (12,4)
+[BOT] Using ranked move (12, 3) in 0.006s
+[BOT] Making move: (12,3)
+[BOT] Using ranked move (16, 4) in 0.006s
+[BOT] Making move: (16,4)
+[BOT] Using ranked move (15, 6) in 0.006s
+[BOT] Making move: (15,6)
+[BOT] Using ranked move (15, 9) in 0.005s
+[BOT] Making move: (15,9)
+[BOT] Using ranked move (17, 9) in 0.005s
+[BOT] Making move: (17,9)
+[BOT] Using ranked move (12, 8) in 0.005s
+[BOT] Making move: (12,8)
+[BOT] Defeat. normal_bot_s035c won the game.
+[GAMETREE] Recorded game result: WIN_NORMAL, I lost
+[GAMETREE] Database stats: {'board_states': 2035, 'moves': 284, 'games': 49}
+[BOT] Game complete, waiting for tournament runner...
+[BOT] Created game a7f91434, playing as White
+[BOT] Waiting for opponent...
+[BOT] Game started! Playing as White against normal_bot_s035c
+[BOT] Using ranked move (12, 8) in 0.008s
+[BOT] Making move: (12,8)
+[BOT] Using ranked move (12, 10) in 0.007s
+[BOT] Making move: (12,10)
+[BOT] Using ranked move (10, 8) in 0.007s
+[BOT] Making move: (10,8)
+[BOT] Using ranked move (11, 8) in 0.007s
+[BOT] Making move: (11,8)
+[BOT] Using ranked move (10, 11) in 0.007s
+[BOT] Making move: (10,11)
+[BOT] Using ranked move (12, 7) in 0.007s
+[BOT] Making move: (12,7)
+[BOT] Using ranked move (7, 7) in 0.007s
+[BOT] Making move: (7,7)
+[BOT] Using ranked move (10, 9) in 0.006s
+[BOT] Making move: (10,9)
+[BOT] Using ranked move (9, 9) in 0.007s
+[BOT] Making move: (9,9)
+[BOT] Using ranked move (7, 10) in 0.006s
+[BOT] Making move: (7,10)
+[BOT] Using ranked move (8, 10) in 0.007s
+[BOT] Making move: (8,10)
+[BOT] Using ranked move (6, 10) in 0.006s
+[BOT] Making move: (6,10)
+[BOT] Using ranked move (8, 5) in 0.006s
+[BOT] Making move: (8,5)
+[BOT] Using ranked move (12, 5) in 0.006s
+[BOT] Making move: (12,5)
+[BOT] Using ranked move (11, 5) in 0.006s
+[BOT] Making move: (11,5)
+[BOT] Using ranked move (12, 6) in 0.006s
+[BOT] Making move: (12,6)
+[BOT] Defeat. normal_bot_s035c won the game.
+[GAMETREE] Recorded game result: WIN_NORMAL, I lost
+[GAMETREE] Database stats: {'board_states': 2051, 'moves': 300, 'games': 50}
+[BOT] Game complete, waiting for tournament runner...
+[BOT] Created game c833f1eb, playing as White
+[BOT] Waiting for opponent...
+[BOT] Game started! Playing as White against normal_bot_s035c
+[BOT] Using ranked move (9, 8) in 0.007s
+[BOT] Making move: (9,8)
+[BOT] Using ranked move (10, 7) in 0.007s
+[BOT] Making move: (10,7)
+[BOT] Using ranked move (11, 9) in 0.007s
+[BOT] Making move: (11,9)
+[BOT] Using ranked move (9, 12) in 0.007s
+[BOT] Making move: (9,12)
+[BOT] Using ranked move (14, 7) in 0.007s
+[BOT] Making move: (14,7)
+[BOT] Using ranked move (10, 12) in 0.007s
+[BOT] Making move: (10,12)
+[BOT] Using ranked move (12, 10) in 0.006s
+[BOT] Making move: (12,10)
+[BOT] Using ranked move (8, 9) in 0.006s
+[BOT] Making move: (8,9)
+[BOT] Using ranked move (8, 10) in 0.006s
+[BOT] Making move: (8,10)
+[BOT] Using ranked move (9, 11) in 0.006s
+[BOT] Making move: (9,11)
+[BOT] Using ranked move (11, 14) in 0.006s
+[BOT] Making move: (11,14)
+[BOT] Using ranked move (9, 9) in 0.006s
+[BOT] Making move: (9,9)
+[BOT] Using ranked move (13, 14) in 0.006s
+[BOT] Making move: (13,14)
+[BOT] Using ranked move (9, 13) in 0.006s
+[BOT] Making move: (9,13)
+[BOT] Using ranked move (12, 11) in 0.006s
+[BOT] Making move: (12,11)
+[BOT] Using ranked move (14, 13) in 0.006s
+[BOT] Making move: (14,13)
+[BOT] Using ranked move (12, 12) in 0.006s
+[BOT] Making move: (12,12)
+[BOT] Using ranked move (11, 6) in 0.006s
+[BOT] Making move: (11,6)
+[BOT] Using ranked move (9, 7) in 0.006s
+[BOT] Making move: (9,7)
+[BOT] Using ranked move (7, 8) in 0.006s
+[BOT] Making move: (7,8)
+[BOT] Using ranked move (9, 6) in 0.006s
+[BOT] Making move: (9,6)
+[BOT] Using ranked move (10, 6) in 0.006s
+[BOT] Making move: (10,6)
+[BOT] Using ranked move (10, 4) in 0.006s
+[BOT] Making move: (10,4)
+[BOT] Using ranked move (11, 5) in 0.006s
+[BOT] Making move: (11,5)
+[BOT] Using ranked move (12, 4) in 0.006s
+[BOT] Making move: (12,4)
+[BOT] Using ranked move (11, 4) in 0.006s
+[BOT] Making move: (11,4)
+[BOT] Using ranked move (13, 5) in 0.006s
+[BOT] Making move: (13,5)
+[BOT] Using ranked move (12, 3) in 0.006s
+[BOT] Making move: (12,3)
+[BOT] Using ranked move (8, 4) in 0.006s
+[BOT] Making move: (8,4)
+[BOT] Using ranked move (15, 12) in 0.006s
+[BOT] Making move: (15,12)
+[BOT] Using ranked move (12, 15) in 0.005s
+[BOT] Making move: (12,15)
+[BOT] Using ranked move (10, 15) in 0.006s
+[BOT] Making move: (10,15)
+[BOT] Using ranked move (12, 14) in 0.006s
+[BOT] Making move: (12,14)
+[BOT] Using ranked move (7, 6) in 0.005s
+[BOT] Making move: (7,6)
+[BOT] Using ranked move (5, 9) in 0.005s
+[BOT] Making move: (5,9)
+[BOT] Using ranked move (7, 5) in 0.005s
+[BOT] Making move: (7,5)
+[BOT] Using ranked move (6, 9) in 0.005s
+[BOT] Making move: (6,9)
+[BOT] Defeat. normal_bot_s035c won the game.
+[GAMETREE] Recorded game result: WIN_NORMAL, I lost
+[GAMETREE] Database stats: {'board_states': 2088, 'moves': 337, 'games': 51}
+[BOT] Game complete, waiting for tournament runner...
+[BOT] Created game 7052c7ae, playing as White
+[BOT] Waiting for opponent...
+[BOT] Game started! Playing as White against normal_bot_s035c
+[BOT] Using ranked move (10, 8) in 0.008s
+[BOT] Making move: (10,8)
+[BOT] Using ranked move (11, 9) in 0.007s
+[BOT] Making move: (11,9)
+[BOT] Using ranked move (9, 6) in 0.007s
+[BOT] Making move: (9,6)
+[BOT] Using ranked move (8, 7) in 0.007s
+[BOT] Making move: (8,7)
+[BOT] Using ranked move (10, 11) in 0.007s
+[BOT] Making move: (10,11)
+[BOT] Using ranked move (14, 11) in 0.008s
+[BOT] Making move: (14,11)
+[BOT] Using ranked move (10, 10) in 0.007s
+[BOT] Making move: (10,10)
+[BOT] Using ranked move (12, 11) in 0.007s
+[BOT] Making move: (12,11)
+[BOT] Using ranked move (13, 9) in 0.007s
+[BOT] Making move: (13,9)
+[BOT] Using ranked move (12, 6) in 0.007s
+[BOT] Making move: (12,6)
+[BOT] Using ranked move (13, 7) in 0.007s
+[BOT] Making move: (13,7)
+[BOT] Using ranked move (10, 5) in 0.007s
+[BOT] Making move: (10,5)
+[BOT] Using ranked move (11, 5) in 0.006s
+[BOT] Making move: (11,5)
+[BOT] Using ranked move (15, 8) in 0.006s
+[BOT] Making move: (15,8)
+[BOT] Using ranked move (14, 10) in 0.006s
+[BOT] Making move: (14,10)
+[BOT] Defeat. normal_bot_s035c won the game.
+[GAMETREE] Recorded game result: WIN_NORMAL, I lost
+[GAMETREE] Database stats: {'board_states': 2103, 'moves': 352, 'games': 52}
+[BOT] Game complete, waiting for tournament runner...
+[BOT] Created game dfd26a5d, playing as White
+[BOT] Waiting for opponent...
+[BOT] Game started! Playing as White against easy_bot_s035c
+[BOT] Using ranked move (9, 11) in 0.008s
+[BOT] Making move: (9,11)
+[BOT] Using ranked move (8, 9) in 0.007s
+[BOT] Making move: (8,9)
+[BOT] Using ranked move (8, 12) in 0.007s
+[BOT] Making move: (8,12)
+[BOT] Using ranked move (11, 9) in 0.007s
+[BOT] Making move: (11,9)
+[BOT] Using ranked move (10, 8) in 0.006s
+[BOT] Making move: (10,8)
+[BOT] Using ranked move (9, 7) in 0.007s
+[BOT] Making move: (9,7)
+[BOT] Using ranked move (10, 9) in 0.007s
+[BOT] Making move: (10,9)
+[BOT] Using ranked move (12, 9) in 0.008s
+[BOT] Making move: (12,9)
+[BOT] Using ranked move (10, 6) in 0.007s
+[BOT] Making move: (10,6)
+[BOT] Using ranked move (8, 6) in 0.007s
+[BOT] Making move: (8,6)
+[BOT] Using ranked move (9, 6) in 0.006s
+[BOT] Making move: (9,6)
+[BOT] Using ranked move (7, 6) in 0.006s
+[BOT] Making move: (7,6)
+[BOT] Using ranked move (5, 7) in 0.006s
+[BOT] Making move: (5,7)
+[BOT] Using ranked move (13, 4) in 0.006s
+[BOT] Making move: (13,4)
+[BOT] Using ranked move (5, 5) in 0.006s
+[BOT] Making move: (5,5)
+[BOT] Using ranked move (5, 6) in 0.006s
+[BOT] Making move: (5,6)
+[BOT] Using ranked move (5, 8) in 0.006s
+[BOT] Making move: (5,8)
+[BOT] Using ranked move (6, 7) in 0.006s
+[BOT] Making move: (6,7)
+[BOT] Using ranked move (4, 9) in 0.006s
+[BOT] Making move: (4,9)
+[BOT] Using ranked move (4, 5) in 0.006s
+[BOT] Making move: (4,5)
+[BOT] Using ranked move (9, 5) in 0.006s
+[BOT] Making move: (9,5)
+[BOT] Using ranked move (7, 11) in 0.006s
+[BOT] Making move: (7,11)
+[BOT] Using ranked move (5, 10) in 0.006s
+[BOT] Making move: (5,10)
+[BOT] Using ranked move (4, 12) in 0.006s
+[BOT] Making move: (4,12)
+[BOT] Using ranked move (4, 10) in 0.006s
+[BOT] Making move: (4,10)
+[BOT] Using ranked move (10, 5) in 0.006s
+[BOT] Making move: (10,5)
+[BOT] Using ranked move (4, 4) in 0.006s
+[BOT] Making move: (4,4)
+[BOT] Using ranked move (8, 4) in 0.006s
+[BOT] Making move: (8,4)
+[BOT] Using ranked move (4, 7) in 0.006s
+[BOT] Making move: (4,7)
+[BOT] Using ranked move (15, 11) in 0.006s
+[BOT] Making move: (15,11)
+[BOT] Using ranked move (4, 6) in 0.006s
+[BOT] Making move: (4,6)
+[BOT] Using ranked move (4, 8) in 0.006s
+[BOT] Making move: (4,8)
+[BOT] Victory! I won the game!
+[GAMETREE] Recorded game result: WIN_NORMAL, I won
+[GAMETREE] Database stats: {'board_states': 2135, 'moves': 384, 'games': 53}
+[BOT] Game complete, waiting for tournament runner...
+[BOT] Created game fb37c167, playing as Black
+[BOT] Waiting for opponent...
+[BOT] Game started! Playing as Black against easy_bot_s035c
+[BOT] Using ranked move (10, 8) in 0.008s
+[BOT] Making move: (10,8)
+[BOT] Using ranked move (8, 8) in 0.007s
+[BOT] Making move: (8,8)
+[BOT] Using ranked move (7, 11) in 0.007s
+[BOT] Making move: (7,11)
+[BOT] Using ranked move (10, 9) in 0.007s
+[BOT] Making move: (10,9)
+[BOT] Using ranked move (10, 11) in 0.006s
+[BOT] Making move: (10,11)
+[BOT] Using ranked move (5, 6) in 0.007s
+[BOT] Making move: (5,6)
+[BOT] Using ranked move (11, 10) in 0.006s
+[BOT] Making move: (11,10)
+[BOT] Using ranked move (6, 10) in 0.007s
+[BOT] Making move: (6,10)
+[BOT] Using ranked move (11, 9) in 0.007s
+[BOT] Making move: (11,9)
+[BOT] Using ranked move (11, 11) in 0.006s
+[BOT] Making move: (11,11)
+[BOT] Using ranked move (11, 7) in 0.006s
+[BOT] Making move: (11,7)
+[BOT] Victory! I won the game!
+[GAMETREE] Recorded game result: WIN_NORMAL, I won
+[GAMETREE] Database stats: {'board_states': 2146, 'moves': 395, 'games': 54}
+[BOT] Game complete, waiting for tournament runner...
+[BOT] Created game a95fcc7e, playing as White
+[BOT] Waiting for opponent...
+[BOT] Game started! Playing as White against easy_bot_s035c
+[BOT] Using ranked move (7, 9) in 0.009s
+[BOT] Making move: (7,9)
+[BOT] Using ranked move (8, 10) in 0.008s
+[BOT] Making move: (8,10)
+[BOT] Using ranked move (6, 8) in 0.007s
+[BOT] Making move: (6,8)
+[BOT] Using ranked move (5, 7) in 0.007s
+[BOT] Making move: (5,7)
+[BOT] Using ranked move (7, 7) in 0.007s
+[BOT] Making move: (7,7)
+[BOT] Using ranked move (9, 12) in 0.006s
+[BOT] Making move: (9,12)
+[BOT] Using ranked move (11, 8) in 0.007s
+[BOT] Making move: (11,8)
+[BOT] Using ranked move (8, 7) in 0.007s
+[BOT] Making move: (8,7)
+[BOT] Using ranked move (7, 8) in 0.007s
+[BOT] Making move: (7,8)
+[BOT] Using ranked move (12, 9) in 0.007s
+[BOT] Making move: (12,9)
+[BOT] Using ranked move (10, 7) in 0.007s
+[BOT] Making move: (10,7)
+[BOT] Using ranked move (9, 6) in 0.006s
+[BOT] Making move: (9,6)
+[BOT] Using ranked move (13, 10) in 0.007s
+[BOT] Making move: (13,10)
+[BOT] Victory! I won the game!
+[GAMETREE] Recorded game result: WIN_NORMAL, I won
+[GAMETREE] Database stats: {'board_states': 2159, 'moves': 408, 'games': 55}
+[BOT] Game complete, waiting for tournament runner...
+[BOT] Created game 85ecbf1f, playing as Black
+[BOT] Waiting for opponent...
+[BOT] Game started! Playing as Black against easy_bot_s035c
+[BOT] Using ranked move (10, 8) in 0.009s
+[BOT] Making move: (10,8)
+[BOT] Using ranked move (10, 6) in 0.007s
+[BOT] Making move: (10,6)
+[BOT] Using ranked move (8, 8) in 0.007s
+[BOT] Making move: (8,8)
+[BOT] Using ranked move (9, 8) in 0.008s
+[BOT] Making move: (9,8)
+[BOT] Using ranked move (9, 10) in 0.009s
+[BOT] Making move: (9,10)
+[BOT] Using ranked move (9, 7) in 0.009s
+[BOT] Making move: (9,7)
+[BOT] Using ranked move (8, 7) in 0.011s
+[BOT] Making move: (8,7)
+[BOT] Using ranked move (11, 7) in 0.013s
+[BOT] Making move: (11,7)
+[BOT] Using ranked move (12, 7) in 0.009s
+[BOT] Making move: (12,7)
+[BOT] Victory! I won the game!
+[GAMETREE] Recorded game result: WIN_NORMAL, I won
+[GAMETREE] Database stats: {'board_states': 2168, 'moves': 417, 'games': 56}
+[BOT] Game complete, waiting for tournament runner...
+[BOT] Created game c4d9046f, playing as White
+[BOT] Waiting for opponent...
+[BOT] Game started! Playing as White against easy_bot_s035c
+[BOT] Using ranked move (10, 10) in 0.013s
+[BOT] Making move: (10,10)
+[BOT] Using ranked move (12, 8) in 0.010s
+[BOT] Making move: (12,8)
+[BOT] Using ranked move (9, 11) in 0.018s
+[BOT] Making move: (9,11)
+[BOT] Using ranked move (7, 9) in 0.018s
+[BOT] Making move: (7,9)
+[BOT] Using ranked move (8, 11) in 0.014s
+[BOT] Making move: (8,11)
+[BOT] Using ranked move (8, 6) in 0.009s
+[BOT] Making move: (8,6)
+[BOT] Using ranked move (10, 8) in 0.009s
+[BOT] Making move: (10,8)
+[BOT] Using ranked move (9, 6) in 0.014s
+[BOT] Making move: (9,6)
+[BOT] Using ranked move (10, 11) in 0.012s
+[BOT] Making move: (10,11)
+[BOT] Using ranked move (10, 9) in 0.018s
+[BOT] Making move: (10,9)
+[BOT] Using ranked move (10, 7) in 0.009s
+[BOT] Making move: (10,7)
+[BOT] Victory! I won the game!
+[GAMETREE] Recorded game result: WIN_NORMAL, I won
+[GAMETREE] Database stats: {'board_states': 2179, 'moves': 428, 'games': 57}
+[BOT] Game complete, waiting for tournament runner...
+[BOT] Created game 8fafe34d, playing as Black
+[BOT] Waiting for opponent...
+[BOT] Game started! Playing as Black against easy_bot_s035c
+[BOT] Using ranked move (9, 10) in 0.010s
+[BOT] Making move: (9,10)
+[BOT] Using ranked move (8, 10) in 0.008s
+[BOT] Making move: (8,10)
+[BOT] Using ranked move (8, 9) in 0.007s
+[BOT] Making move: (8,9)
+[BOT] Using ranked move (7, 8) in 0.007s
+[BOT] Making move: (7,8)
+[BOT] Using ranked move (6, 7) in 0.007s
+[BOT] Making move: (6,7)
+[BOT] Using ranked move (8, 11) in 0.007s
+[BOT] Making move: (8,11)
+[BOT] Using ranked move (7, 12) in 0.007s
+[BOT] Making move: (7,12)
+[BOT] Using ranked move (6, 13) in 0.006s
+[BOT] Making move: (6,13)
+[BOT] Using ranked move (11, 9) in 0.006s
+[BOT] Making move: (11,9)
+[BOT] Using ranked move (12, 8) in 0.006s
+[BOT] Making move: (12,8)
+[BOT] Using ranked move (13, 7) in 0.006s
+[BOT] Making move: (13,7)
+[BOT] Using ranked move (11, 11) in 0.006s
+[BOT] Making move: (11,11)
+[BOT] Using ranked move (12, 12) in 0.006s
+[BOT] Making move: (12,12)
+[BOT] Using ranked move (9, 7) in 0.006s
+[BOT] Making move: (9,7)
+[BOT] Using ranked move (8, 7) in 0.006s
+[BOT] Making move: (8,7)
+[BOT] Using ranked move (6, 9) in 0.006s
+[BOT] Making move: (6,9)
+[BOT] Using ranked move (5, 5) in 0.006s
+[BOT] Making move: (5,5)
+[BOT] Using ranked move (9, 6) in 0.006s
+[BOT] Making move: (9,6)
+[BOT] Using ranked move (10, 7) in 0.006s
+[BOT] Making move: (10,7)
+[BOT] Using ranked move (12, 6) in 0.006s
+[BOT] Making move: (12,6)
+[BOT] Using ranked move (11, 6) in 0.006s
+[BOT] Making move: (11,6)
+[BOT] Using ranked move (12, 7) in 0.006s
+[BOT] Making move: (12,7)
+[BOT] Using ranked move (11, 5) in 0.006s
+[BOT] Making move: (11,5)
+[BOT] Using ranked move (9, 5) in 0.006s
+[BOT] Making move: (9,5)
+[BOT] Using ranked move (10, 2) in 0.006s
+[BOT] Making move: (10,2)
+[BOT] Using ranked move (14, 7) in 0.006s
+[BOT] Making move: (14,7)
+[BOT] Using ranked move (11, 4) in 0.006s
+[BOT] Making move: (11,4)
+[BOT] Using ranked move (11, 2) in 0.006s
+[BOT] Making move: (11,2)
+[BOT] Using ranked move (12, 2) in 0.005s
+[BOT] Making move: (12,2)
+[BOT] Using ranked move (16, 6) in 0.006s
+[BOT] Making move: (16,6)
+[BOT] Using ranked move (8, 3) in 0.005s
+[BOT] Making move: (8,3)
+[BOT] Using ranked move (13, 3) in 0.005s
+[BOT] Making move: (13,3)
+[BOT] Using ranked move (6, 10) in 0.005s
+[BOT] Making move: (6,10)
+[BOT] Using ranked move (15, 5) in 0.005s
+[BOT] Making move: (15,5)
+[BOT] Using ranked move (6, 12) in 0.005s
+[BOT] Making move: (6,12)
+[BOT] Using ranked move (5, 9) in 0.005s
+[BOT] Making move: (5,9)
+[BOT] Using ranked move (4, 6) in 0.005s
+[BOT] Making move: (4,6)
+[BOT] Using ranked move (6, 4) in 0.005s
+[BOT] Making move: (6,4)
+[BOT] Using ranked move (7, 3) in 0.005s
+[BOT] Making move: (7,3)
+[BOT] Using ranked move (6, 3) in 0.005s
+[BOT] Making move: (6,3)
+[BOT] Using ranked move (6, 2) in 0.005s
+[BOT] Making move: (6,2)
+[BOT] Using ranked move (7, 4) in 0.005s
+[BOT] Making move: (7,4)
+[BOT] Using ranked move (5, 4) in 0.005s
+[BOT] Making move: (5,4)
+[BOT] Using ranked move (7, 2) in 0.005s
+[BOT] Making move: (7,2)
+[BOT] Using ranked move (7, 1) in 0.005s
+[BOT] Making move: (7,1)
+[BOT] Using ranked move (7, 0) in 0.005s
+[BOT] Making move: (7,0)
+[BOT] Victory! I won the game!
+[GAMETREE] Recorded game result: WIN_NORMAL, I won
+[GAMETREE] Database stats: {'board_states': 2225, 'moves': 474, 'games': 58}
+[BOT] Game complete, waiting for tournament runner...
+[BOT] Created game 438e0fdc, playing as White
+[BOT] Waiting for opponent...
+[BOT] Game started! Playing as White against easy_bot_s035c
+[BOT] Using ranked move (6, 12) in 0.010s
+[BOT] Making move: (6,12)
+[BOT] Using ranked move (7, 7) in 0.008s
+[BOT] Making move: (7,7)
+[BOT] Using ranked move (7, 9) in 0.007s
+[BOT] Making move: (7,9)
+[BOT] Using ranked move (8, 7) in 0.007s
+[BOT] Making move: (8,7)
+[BOT] Using ranked move (8, 12) in 0.007s
+[BOT] Making move: (8,12)
+[BOT] Using ranked move (7, 12) in 0.007s
+[BOT] Making move: (7,12)
+[BOT] Using ranked move (9, 7) in 0.006s
+[BOT] Making move: (9,7)
+[BOT] Using ranked move (10, 7) in 0.006s
+[BOT] Making move: (10,7)
+[BOT] Using ranked move (11, 7) in 0.006s
+[BOT] Making move: (11,7)
+[BOT] Victory! I won the game!
+[GAMETREE] Recorded game result: WIN_NORMAL, I won
+[GAMETREE] Database stats: {'board_states': 2234, 'moves': 483, 'games': 59}
+[BOT] Game complete, waiting for tournament runner...
+[BOT] Created game 1c161c6e, playing as White
+[BOT] Waiting for opponent...
+[BOT] Game started! Playing as White against easy_bot_s035c
+[BOT] Using ranked move (9, 9) in 0.009s
+[BOT] Making move: (9,9)
+[BOT] Using ranked move (10, 8) in 0.008s
+[BOT] Making move: (10,8)
+[BOT] Using ranked move (8, 9) in 0.007s
+[BOT] Making move: (8,9)
+[BOT] Using ranked move (7, 9) in 0.007s
+[BOT] Making move: (7,9)
+[BOT] Using ranked move (12, 9) in 0.007s
+[BOT] Making move: (12,9)
+[BOT] Using ranked move (11, 10) in 0.007s
+[BOT] Making move: (11,10)
+[BOT] Using ranked move (10, 11) in 0.006s
+[BOT] Making move: (10,11)
+[BOT] Using ranked move (7, 10) in 0.006s
+[BOT] Making move: (7,10)
+[BOT] Using ranked move (7, 12) in 0.006s
+[BOT] Making move: (7,12)
+[BOT] Using ranked move (11, 8) in 0.007s
+[BOT] Making move: (11,8)
+[BOT] Using ranked move (10, 7) in 0.007s
+[BOT] Making move: (10,7)
+[BOT] Using ranked move (13, 7) in 0.007s
+[BOT] Making move: (13,7)
+[BOT] Using ranked move (11, 6) in 0.006s
+[BOT] Making move: (11,6)
+[BOT] Using ranked move (7, 8) in 0.006s
+[BOT] Making move: (7,8)
+[BOT] Using ranked move (7, 7) in 0.006s
+[BOT] Making move: (7,7)
+[BOT] Using ranked move (8, 7) in 0.006s
+[BOT] Making move: (8,7)
+[BOT] Using ranked move (12, 4) in 0.006s
+[BOT] Making move: (12,4)
+[BOT] Using ranked move (9, 4) in 0.006s
+[BOT] Making move: (9,4)
+[BOT] Using ranked move (10, 5) in 0.006s
+[BOT] Making move: (10,5)
+[BOT] Using ranked move (10, 4) in 0.006s
+[BOT] Making move: (10,4)
+[BOT] Using ranked move (6, 6) in 0.006s
+[BOT] Making move: (6,6)
+[BOT] Using ranked move (11, 4) in 0.006s
+[BOT] Making move: (11,4)
+[BOT] Using ranked move (8, 4) in 0.006s
+[BOT] Making move: (8,4)
+[BOT] Victory! I won the game!
+[GAMETREE] Recorded game result: WIN_NORMAL, I won
+[GAMETREE] Database stats: {'board_states': 2257, 'moves': 506, 'games': 60}
+[BOT] Game complete, waiting for tournament runner...
+[BOT] Created game 6ace5179, playing as White
+[BOT] Waiting for opponent...
+[BOT] Game started! Playing as White against easy_bot_s035c
+[BOT] Using ranked move (10, 8) in 0.010s
+[BOT] Making move: (10,8)
+[BOT] Using ranked move (8, 9) in 0.008s
+[BOT] Making move: (8,9)
+[BOT] Using ranked move (10, 10) in 0.008s
+[BOT] Making move: (10,10)
+[BOT] Using ranked move (9, 10) in 0.007s
+[BOT] Making move: (9,10)
+[BOT] Using ranked move (8, 7) in 0.007s
+[BOT] Making move: (8,7)
+[BOT] Using ranked move (13, 12) in 0.006s
+[BOT] Making move: (13,12)
+[BOT] Using ranked move (7, 8) in 0.006s
+[BOT] Making move: (7,8)
+[BOT] Using ranked move (9, 6) in 0.006s
+[BOT] Making move: (9,6)
+[BOT] Using ranked move (6, 8) in 0.007s
+[BOT] Making move: (6,8)
+[BOT] Using ranked move (7, 9) in 0.007s
+[BOT] Making move: (7,9)
+[BOT] Using ranked move (9, 11) in 0.006s
+[BOT] Making move: (9,11)
+[BOT] Using ranked move (5, 7) in 0.006s
+[BOT] Making move: (5,7)
+[BOT] Victory! I won the game!
+[GAMETREE] Recorded game result: WIN_NORMAL, I won
+[GAMETREE] Database stats: {'board_states': 2269, 'moves': 518, 'games': 61}
+[BOT] Game complete, waiting for tournament runner...
+[BOT] Created game 1dac94f2, playing as Black
+[BOT] Waiting for opponent...
+[BOT] Game started! Playing as Black against easy_bot_s035c
+[BOT] Using ranked move (9, 10) in 0.010s
+[BOT] Making move: (9,10)
+[BOT] Using ranked move (8, 10) in 0.008s
+[BOT] Making move: (8,10)
+[BOT] Using ranked move (10, 9) in 0.007s
+[BOT] Making move: (10,9)
+[BOT] Using ranked move (10, 8) in 0.007s
+[BOT] Making move: (10,8)
+[BOT] Using ranked move (10, 6) in 0.007s
+[BOT] Making move: (10,6)
+[BOT] Victory! I won the game!
+[GAMETREE] Recorded game result: WIN_NORMAL, I won

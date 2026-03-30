@@ -4,6 +4,11 @@ import json
 import random
 import sys
 import os
+import time
+from typing import Optional, List
+
+# Import gametree database
+from gametree_db import gametree_db, BOARD_SIZE, EMPTY, BLACK, WHITE
 
 # Load configuration from config.json
 def load_config():
@@ -24,12 +29,6 @@ SERVER_URL = config.get("server_url", "ws://localhost:8000/ws")
 TOKEN = config.get("token", "")
 USERNAME = config.get("username", "")
 
-# Board representation
-BOARD_SIZE = 19
-EMPTY = 0
-BLACK = 1
-WHITE = 2
-
 class GomokuBot:
     def __init__(self, token, username):
         self.token = token
@@ -39,6 +38,8 @@ class GomokuBot:
         self.my_color = None
         self.board = None
         self.game_over = False
+        self.move_history = []  # Track moves for gametree
+        self.move_count = 0
         
     async def connect(self):
         """Connect to the game server"""
@@ -103,12 +104,27 @@ class GomokuBot:
             
             if game_over:
                 self.game_over = True
+                player1 = message.get("player1", "unknown")
+                player2 = message.get("player2", "unknown")
+                outcome = message.get("outcome", "UNKNOWN")
+                
                 if winner == self.username:
                     print(f"[BOT] Victory! I won the game!")
                 elif winner:
                     print(f"[BOT] Defeat. {winner} won the game.")
                 else:
                     print(f"[BOT] Game ended in a draw.")
+                
+                # Record game result to gametree database
+                try:
+                    gametree_db.record_game_result(
+                        self.game_id, player1, player2, winner, outcome,
+                        self.move_history, self.username
+                    )
+                    stats = gametree_db.get_stats()
+                    print(f"[GAMETREE] Database stats: {stats}")
+                except Exception as e:
+                    print(f"[GAMETREE] Error recording game result: {e}")
                 
                 # Wait a bit then reset state - DON'T auto-create new game
                 # Tournament runner will force games for us
@@ -123,6 +139,25 @@ class GomokuBot:
                 if move:
                     row, col = move
                     print(f"[BOT] Making move: ({row},{col})")
+                    
+                    # Record this move in gametree before sending
+                    try:
+                        state_hash = gametree_db.get_or_create_state(self.board, current_turn)
+                        gametree_db.record_move(
+                            self.game_id, self.move_count, self.board,
+                            row, col, self.my_color, current_turn
+                        )
+                        self.move_history.append({
+                            'state_hash': state_hash,
+                            'row': row,
+                            'col': col,
+                            'player': self.my_color,
+                            'move_number': self.move_count
+                        })
+                        self.move_count += 1
+                    except Exception as e:
+                        print(f"[GAMETREE] Error recording move: {e}")
+                    
                     await self.send_message({
                         "type": "make_move",
                         "row": row,
@@ -152,34 +187,49 @@ class GomokuBot:
         self.my_color = None
         self.board = None
         self.game_over = False
+        self.move_history = []  # Clear move history
+        self.move_count = 0
     
     def choose_move(self, board, my_color, game_id):
         """
-        Choose the best move based on current board state using position ranking system.
-        
-        This strategy uses a comprehensive scoring system that evaluates each empty position
-        by looking at patterns in all 8 directions (horizontal, vertical, and diagonals).
-        
-        The ranking system prioritizes:
-        1. Immediate wins (4-in-a-row that can become 5)
-        2. Blocking opponent's immediate wins
-        3. Creating forcing moves (3-in-a-row with both ends open)
-        4. Blocking opponent's forcing moves
-        5. Building 2-in-a-row and 3-in-a-row patterns
-        6. General positional play
+        Choose the best move using gametree database with 4-second timeout.
+        Falls back to positional ranking if no known move or timeout.
         """
-        # Create rankings matrix
-        rankings = [[0 for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
+        start_time = time.time()
         
-        # Rank all empty cells
+        # First, try to get move from gametree database
+        try:
+            db_move = gametree_db.get_best_move(board, my_color)
+            if db_move:
+                row, col = db_move
+                # Verify the move is valid (empty cell)
+                if board[row][col] == EMPTY:
+                    elapsed = time.time() - start_time
+                    print(f"[BOT] Using database move ({row},{col}) in {elapsed:.3f}s")
+                    return db_move
+        except Exception as e:
+            print(f"[GAMETREE] Error retrieving move: {e}")
+        
+        # Check if we're approaching timeout (4 seconds)
+        elapsed = time.time() - start_time
+        if elapsed > 4.0:
+            # Fall back to random move to avoid timeout
+            print(f"[BOT] Approaching timeout ({elapsed:.2f}s), using random move")
+            empty_cells = [(r, c) for r in range(BOARD_SIZE) for c in range(BOARD_SIZE) if board[r][c] == EMPTY]
+            if empty_cells:
+                return random.choice(empty_cells)
+            return None
+        
+        # Use positional ranking system (existing strategy)
+        rankings = [[0 for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
         opponent_color = 3 - my_color
         rank_cells(board, rankings, my_color, opponent_color)
-        
-        # Add small random values to break ties
         add_random_rankings(board, rankings)
         
-        # Pick the highest ranked position
-        return pick_highest(board, rankings)
+        move = pick_highest(board, rankings)
+        elapsed = time.time() - start_time
+        print(f"[BOT] Using ranked move {move} in {elapsed:.3f}s")
+        return move
     
     async def run(self):
         """Main bot loop"""
